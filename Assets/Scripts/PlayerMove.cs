@@ -46,8 +46,6 @@ public class PlayerMove : MonoBehaviour
     {
         rb.gravityScale = gravityScale;
     }
-
-    // Update is called once per frame
     void Update()
     {
         inputX = Input.GetAxisRaw("Horizontal");
