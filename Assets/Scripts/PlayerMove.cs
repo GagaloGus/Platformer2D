@@ -12,17 +12,22 @@ public class PlayerMove : MonoBehaviour
     [Header("Movement")]
     public float maxSpeed = 8f;
     public float runSpeedIncrease = 2f;
-    public float acceleration = 60f;
-    public float airAcceleration = 30f;
+    public float acceleration = 40f;
     public float friction = 40f;
+    public float slideVelRequired = 10;
 
     [Header("Run Smooth")]
-    public float runTransitionSpeed = 4f;
+    public float runTransitionSpeed = 5f;
     float currentSpeedMultiplier = 1f;
+
+    [Header("Animation States")]
+    public PlayerMoveStates playerMoveState;
+    public SpriteRenderer spriteRend;
 
     [Header("Keys")]
     public KeyCode runKey = KeyCode.LeftShift;
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode slideKey = KeyCode.S;
 
     [Header("Jump")]
     public float jumpForce = 12f;
@@ -35,11 +40,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] bool isGrounded;
 
     Rigidbody2D rb;
+    Animator animator;
     float inputX;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRend = GetComponent<SpriteRenderer>();
     }
 
     void Start()
@@ -54,8 +62,34 @@ public class PlayerMove : MonoBehaviour
 
         float targetMultiplier = 1f;
 
-        if(Input.GetKey(runKey))
-            targetMultiplier *= runSpeedIncrease;
+        //Animator + velocidad aumentada
+        if (!isGrounded)
+        {
+            playerMoveState = rb.velocity.y < 0 ? PlayerMoveStates.JumpDown : PlayerMoveStates.JumpUp;
+        }
+        else if (Mathf.Abs(inputX) > 0.01f)
+        {
+            if (Input.GetKey(runKey))
+            {
+                targetMultiplier *= runSpeedIncrease;
+                if (Input.GetKey(slideKey) && Mathf.Abs(rb.velocity.x) >= slideVelRequired)
+                    playerMoveState = PlayerMoveStates.Slide;
+                else
+                    playerMoveState = PlayerMoveStates.Run;
+            }
+            else
+                playerMoveState = PlayerMoveStates.Walk;
+
+            // Flipear el sprite en vez de la escala
+            if (inputX > 0.01f && spriteRend.flipX)
+                spriteRend.flipX = false;
+            if (inputX < -0.01f && !spriteRend.flipX)
+                spriteRend.flipX = true;
+        }
+        else
+            playerMoveState = PlayerMoveStates.Idle;
+
+
 
         // Reduce la velocidad poco a poco
         currentSpeedMultiplier = Mathf.MoveTowards(
@@ -66,6 +100,8 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetKeyDown(jumpKey) && isGrounded)
             Jump();
+
+        animator.SetInteger("player_states", (int)playerMoveState);
     }
 
     void FixedUpdate()
@@ -76,9 +112,7 @@ public class PlayerMove : MonoBehaviour
 
     void Move()
     {
-        float accel = isGrounded ? acceleration : airAcceleration;
-
-        rb.AddForce(Vector2.right * inputX * accel);
+        rb.AddForce(Vector2.right * inputX * acceleration);
 
         float currentMaxSpeed = maxSpeed * currentSpeedMultiplier;
 
@@ -101,7 +135,6 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
     void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -116,10 +149,10 @@ public class PlayerMove : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if(rb == null)
+        if (rb == null)
             rb = GetComponent<Rigidbody2D>();
 
-        float input = rb.velocity.x /8;
+        float input = rb.velocity.x / 8;
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(raycastPosition, Vector2.down * raycastDetectionHeight);
