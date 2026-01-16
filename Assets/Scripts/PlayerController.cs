@@ -7,7 +7,7 @@ public enum PlayerMoveStates
     Idle, Walk, Run, JumpUp, JumpDown, Slide, Attack
 }
 
-public class PlayerMove : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float maxSpeed = 8f;
@@ -18,14 +18,17 @@ public class PlayerMove : MonoBehaviour
 
     [Header("Run Smooth")]
     public float runTransitionSpeed = 5f;
-    float currentSpeedMultiplier = 1f;
+    float currentSpeedMult = 1f, lastTargetSpeedMult;
 
-    [Header("Animation States")]
+    [Header("States")]
     public PlayerMoveStates playerMoveState;
     public SpriteRenderer spriteRend;
+    [SerializeField] bool isGrounded, isAttacking, isRunning, isSliding;
+    public float attackDuration;
 
     [Header("Keys")]
     public KeyCode runKey = KeyCode.LeftShift;
+    public KeyCode attackKey = KeyCode.Mouse0;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode slideKey = KeyCode.S;
 
@@ -37,9 +40,9 @@ public class PlayerMove : MonoBehaviour
     public float raycastStartHeight;
     public float raycastDetectionHeight;
     Vector3 raycastPosition => transform.position + Vector3.down * raycastStartHeight;
-    [SerializeField] bool isGrounded;
 
     Rigidbody2D rb;
+    CapsuleCollider2D capsuleCollider;
     Animator animator;
     float inputX;
 
@@ -48,6 +51,7 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
     }
 
     void Start()
@@ -60,43 +64,71 @@ public class PlayerMove : MonoBehaviour
     {
         inputX = Input.GetAxisRaw("Horizontal");
 
-        float targetMultiplier = 1f;
+        float targetSpeedMult = 1f;
 
         //Animator + velocidad aumentada
         if (!isGrounded)
         {
             playerMoveState = rb.velocity.y < 0 ? PlayerMoveStates.JumpDown : PlayerMoveStates.JumpUp;
-        }
-        else if (Mathf.Abs(inputX) > 0.01f)
-        {
-            if (Input.GetKey(runKey))
-            {
-                targetMultiplier *= runSpeedIncrease;
-                if (Input.GetKey(slideKey) && Mathf.Abs(rb.velocity.x) >= slideVelRequired)
-                    playerMoveState = PlayerMoveStates.Slide;
-                else
-                    playerMoveState = PlayerMoveStates.Run;
-            }
-            else
-                playerMoveState = PlayerMoveStates.Walk;
-
-            // Flipear el sprite en vez de la escala
-            if (inputX > 0.01f && spriteRend.flipX)
-                spriteRend.flipX = false;
-            if (inputX < -0.01f && !spriteRend.flipX)
-                spriteRend.flipX = true;
+            isAttacking = false;
         }
         else
-            playerMoveState = PlayerMoveStates.Idle;
+        {
+            if (Input.GetKeyDown(attackKey) && !isAttacking && !isSliding)
+            {
+                StartCoroutine(AttackCoroutine());
+            }
+            else if (Mathf.Abs(inputX) > 0.01f)
+            {
+                if (Input.GetKey(runKey))
+                {
+                    if (Input.GetKey(slideKey) && Mathf.Abs(rb.velocity.x) >= slideVelRequired)
+                    {
+                        isRunning = false;
+                        isSliding = true;
+                        playerMoveState = PlayerMoveStates.Slide;
+                    }
+                    else
+                    {
+                        isRunning = true;
+                        isSliding = false;
+                        playerMoveState = PlayerMoveStates.Run;
+                    }
+                }
+                else
+                {
+                    isRunning = false;
+                    isSliding = false;
+                    playerMoveState = PlayerMoveStates.Walk;
+                }
+
+                // Flipear el sprite en vez de la escala
+                if (inputX > 0.01f && transform.localScale.x < 0)
+                    transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+                if (inputX < -0.01f && transform.localScale.x > 0)
+                    transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+            }
+            else
+                playerMoveState = PlayerMoveStates.Idle;
+        }
+
+        capsuleCollider.direction = isSliding ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical;
+
+        if(isRunning || isSliding)
+            targetSpeedMult *= runSpeedIncrease;
+        
+        if(isGrounded)
+            lastTargetSpeedMult = targetSpeedMult;
+        else
+            targetSpeedMult = lastTargetSpeedMult;
 
 
-
-        // Reduce la velocidad poco a poco
-        currentSpeedMultiplier = Mathf.MoveTowards(
-            currentSpeedMultiplier,
-            targetMultiplier,
-            runTransitionSpeed * Time.deltaTime
-        );
+            // Reduce la velocidad poco a poco
+            currentSpeedMult = Mathf.MoveTowards(
+                currentSpeedMult,
+                targetSpeedMult,
+                runTransitionSpeed * Time.deltaTime
+            );
 
         if (Input.GetKeyDown(jumpKey) && isGrounded)
             Jump();
@@ -112,15 +144,17 @@ public class PlayerMove : MonoBehaviour
 
     void Move()
     {
-        rb.AddForce(Vector2.right * inputX * acceleration);
+        //Evita que el jugador se mueva al atacar
+        if (!isAttacking)
+            rb.AddForce(Vector2.right * inputX * acceleration);
 
-        float currentMaxSpeed = maxSpeed * currentSpeedMultiplier;
+        float currentMaxSpeed = maxSpeed * currentSpeedMult;
 
         // Limitar velocidad maxima (SUAVE)
         if (Mathf.Abs(rb.velocity.x) > currentMaxSpeed)
         {
             rb.velocity = new Vector2(
-                Mathf.Sign(rb.velocity.x) * currentMaxSpeed,
+               currentMaxSpeed * (rb.velocity.x > 0 ? 1 : -1),
                 rb.velocity.y
             );
         }
@@ -133,6 +167,14 @@ public class PlayerMove : MonoBehaviour
                 rb.velocity.y
             );
         }
+    }
+
+    IEnumerator AttackCoroutine()
+    {
+        isAttacking = true;
+        playerMoveState = PlayerMoveStates.Attack;
+        yield return new WaitForSeconds(attackDuration);
+        isAttacking=false;
     }
 
     void Jump()
