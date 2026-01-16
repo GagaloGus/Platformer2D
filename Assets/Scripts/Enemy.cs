@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool wasInside = false;
+    private Vector2 lastLoc;
 
     void Start()
     {
@@ -45,34 +46,9 @@ public class Enemy : MonoBehaviour
     {
         // Si el objetivo a buscar esta en pleno campo de vision procede a moverse hacia dicho objetivo
         // O si el objetivo dejó de verlo pero lo esta buscando (es decir con el wasInside)
-        if (IsTargetInCone(player.transform) == true || wasInside == true)
+        if (IsTargetInCone(player.transform) == true)
         {
-            // Calcula si el objetivo se encuentra a su derecha
-            if (transform.position.x - player.transform.position.x < 0)
-            {
-                // Cambia su dirección de movimiento hacia la derecha
-                dir = 1f;
-
-                // Cambia la ubicación del detector de obstaculos a la derecha
-                objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
-                // Cambia la rotacion del campo de vision para que mire a su derecha
-                coneDirection = 0f;
-            }
-
-            // Calcula si el objetivo se encuentra a su izquierda
-            if (transform.position.x - player.transform.position.x > 0)
-            {
-                // Cambia su dirección de movimiento hacia la izquierda
-                dir = -1f;
-
-                // Cambia la ubicación del detector de obstaculos a la izquierda
-                objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
-                // Cambia la rotacion del campo de vision para que mire a su izquierda
-                coneDirection = 180f;
-            }
-            // Una vez visto hacia que direccion moverse, procede a acelerar
-            Vector2 move = new Vector2(dir, 0f) * speed * Time.deltaTime;
-            transform.Translate(move);
+            Move(player.transform.position);
         }
 
         // Comprueba constantemente si tiene un obstaculo mas alto que él
@@ -132,8 +108,39 @@ public class Enemy : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
+    void Move(Vector2 loc)
+    {
+        // Calcula si el objetivo se encuentra a su derecha
+        if (transform.position.x - loc.x < 0)
+        {
+            // Cambia su dirección de movimiento hacia la derecha
+            dir = 1f;
+
+            // Cambia la ubicación del detector de obstaculos a la derecha
+            objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
+            // Cambia la rotacion del campo de vision para que mire a su derecha
+            coneDirection = 0f;
+        }
+
+        // Calcula si el objetivo se encuentra a su izquierda
+        if (transform.position.x - loc.x > 0)
+        {
+            // Cambia su dirección de movimiento hacia la izquierda
+            dir = -1f;
+
+            // Cambia la ubicación del detector de obstaculos a la izquierda
+            objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
+            // Cambia la rotacion del campo de vision para que mire a su izquierda
+            coneDirection = 180f;
+        }
+        // Una vez visto hacia que direccion moverse, procede a acelerar
+        Vector2 move = new Vector2(dir, 0f) * speed * Time.deltaTime;
+        transform.Translate(move);
+    }
+
     public void Search()
     {
+        Move(lastLoc);
         // Este metodo simplemente inicia una cuenta atras
         timeLeft -= Time.deltaTime;
         // Si llega a 0, establece 'false' a wasInside para que deje de buscarlo si sigue sin verlo
@@ -176,8 +183,10 @@ public class Enemy : MonoBehaviour
             }
         }
         // Si no se cumple nada de lo anterior devuelve false
+        if (wasInside) {
+            Vector2 lastLoc = new Vector2(player.transform.position.x, player.transform.position.y);
+        }
         return false;
-
     }
 
     // Metodo par ver visualmente en el editor el gizmos de deteccion de obstaculos y suelo
