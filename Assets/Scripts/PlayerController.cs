@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum PlayerMoveStates
 {
-    Idle, Walk, Run, JumpUp, JumpDown, Slide, Attack
+    Idle, Walk, Run, JumpUp, JumpDown, Slide, AttackMelee, AttackRanged
 }
 
 public class PlayerController : MonoBehaviour
@@ -16,25 +16,30 @@ public class PlayerController : MonoBehaviour
     public float friction = 40f;
     public float slideVelRequired = 10;
 
+    [Header("Jump")]
+    public float jumpForce = 12f;
+    public float gravityScale = 3f;
+
+    [Header("Attack")]
+    public PlayerBullet Snowball_bullet;
+    public float attackDuration;
+
+
     [Header("Run Smooth")]
     public float runTransitionSpeed = 5f;
     float currentSpeedMult = 1f, lastTargetSpeedMult;
 
     [Header("States")]
     public PlayerMoveStates playerMoveState;
-    public SpriteRenderer spriteRend;
     [SerializeField] bool isGrounded, isAttacking, isRunning, isSliding;
-    public float attackDuration;
 
     [Header("Keys")]
     public KeyCode runKey = KeyCode.LeftShift;
-    public KeyCode attackKey = KeyCode.Mouse0;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode slideKey = KeyCode.S;
+    public KeyCode attack_MeleeKey = KeyCode.Mouse0;
+    public KeyCode attack_RangeKey = KeyCode.Mouse1;
 
-    [Header("Jump")]
-    public float jumpForce = 12f;
-    public float gravityScale = 3f;
 
     [Header("Raycast")]
     public float raycastStartHeight;
@@ -50,7 +55,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRend = GetComponent<SpriteRenderer>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
     }
 
@@ -66,19 +70,17 @@ public class PlayerController : MonoBehaviour
 
         float targetSpeedMult = 1f;
 
-        //Animator + velocidad aumentada
-        if (!isGrounded)
+        if (!isGrounded) //En el aire
         {
             playerMoveState = rb.velocity.y < 0 ? PlayerMoveStates.JumpDown : PlayerMoveStates.JumpUp;
-            isAttacking = false;
         }
         else
         {
-            if (Input.GetKeyDown(attackKey) && !isAttacking && !isSliding)
+            if (Input.GetKeyDown(attack_MeleeKey) && !isAttacking && !isSliding) //Ataque melee
             {
-                StartCoroutine(AttackCoroutine());
+                StartCoroutine(AttackCoroutine(PlayerMoveStates.AttackMelee));
             }
-            else if (Mathf.Abs(inputX) > 0.01f)
+            else if (Mathf.Abs(inputX) > 0.01f) //Movimiento lateral
             {
                 if (Input.GetKey(runKey))
                 {
@@ -108,8 +110,13 @@ public class PlayerController : MonoBehaviour
                 if (inputX < -0.01f && transform.localScale.x > 0)
                     transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
             }
-            else
+            else //Quieto
                 playerMoveState = PlayerMoveStates.Idle;
+        }
+
+        if (Input.GetKeyDown(attack_RangeKey) && !isAttacking && !isSliding) //Ataque rango que tambien se puede hacer en el aire
+        {
+            StartCoroutine(AttackCoroutine(PlayerMoveStates.AttackRanged));
         }
 
         capsuleCollider.direction = isSliding ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical;
@@ -123,12 +130,12 @@ public class PlayerController : MonoBehaviour
             targetSpeedMult = lastTargetSpeedMult;
 
 
-            // Reduce la velocidad poco a poco
-            currentSpeedMult = Mathf.MoveTowards(
-                currentSpeedMult,
-                targetSpeedMult,
-                runTransitionSpeed * Time.deltaTime
-            );
+        // Reduce la velocidad poco a poco
+        currentSpeedMult = Mathf.MoveTowards(
+            currentSpeedMult,
+            targetSpeedMult,
+            runTransitionSpeed * Time.deltaTime
+        );
 
         if (Input.GetKeyDown(jumpKey) && isGrounded)
             Jump();
@@ -169,10 +176,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator AttackCoroutine()
+    IEnumerator AttackCoroutine(PlayerMoveStates attackType)
     {
         isAttacking = true;
-        playerMoveState = PlayerMoveStates.Attack;
+        playerMoveState = attackType;
+        if(attackType == PlayerMoveStates.AttackRanged)
+        {
+            PlayerBullet bullet = Instantiate(Snowball_bullet);
+            bullet.moveRight = transform.localScale.x > 0;
+            bullet.transform.position = transform.position;
+        }
+
         yield return new WaitForSeconds(attackDuration);
         isAttacking=false;
     }

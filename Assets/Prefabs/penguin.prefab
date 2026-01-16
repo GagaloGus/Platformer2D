@@ -131,19 +131,21 @@ MonoBehaviour:
   acceleration: 40
   friction: 20
   slideVelRequired: 16
-  runTransitionSpeed: 10
-  playerMoveState: 0
-  spriteRend: {fileID: 7455991172113803293}
-  isGrounded: 1
-  isAttacking: 0
-  isSliding: 0
-  attackDuration: 0.15
-  runKey: 304
-  attackKey: 323
-  jumpKey: 32
-  slideKey: 115
   jumpForce: 12
   gravityScale: 3
+  Snowball_bullet: {fileID: -8582091728229918381, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
+  attackDuration: 0.15
+  runTransitionSpeed: 10
+  playerMoveState: 0
+  isGrounded: 1
+  isAttacking: 0
+  isRunning: 0
+  isSliding: 0
+  runKey: 304
+  jumpKey: 32
+  slideKey: 115
+  attack_MeleeKey: 323
+  attack_RangeKey: 324
   raycastStartHeight: 1.12
   raycastDetectionHeight: 0.14
 --- !u!70 &1491546442041673381

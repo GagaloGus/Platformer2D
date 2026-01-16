@@ -4640,7 +4640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7132884336357811220, guid: 9eec49696ffb317428299d85993cf7e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.177
+      value: 1.13
       objectReference: {fileID: 0}
     - target: {fileID: 7132884336357811220, guid: 9eec49696ffb317428299d85993cf7e0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5696,63 +5696,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &7165150082424849926
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.019
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.96
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954220144058279048, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6985340918933022679, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
-      propertyPath: m_Name
-      value: snowball
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -5776,4 +5719,3 @@ SceneRoots:
   - {fileID: 1249089697}
   - {fileID: 1242681905}
   - {fileID: 1648238562}
-  - {fileID: 7165150082424849926}
