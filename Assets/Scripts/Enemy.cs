@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour
     public bool canJump = true;
 
     private Rigidbody2D rb;
-    private bool wasInside = false;
+    private bool wasInside = false, seen = false;
     private Vector2 lastLoc;
 
     void Start()
@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
     {
         // Si el objetivo a buscar esta en pleno campo de vision procede a moverse hacia dicho objetivo
         // O si el objetivo dejó de verlo pero lo esta buscando (es decir con el wasInside)
-        if (IsTargetInCone(player.transform) == true)
+        if (IsTargetInCone(player.transform))
         {
             Move(player.transform.position);
         }
@@ -176,6 +176,7 @@ public class Enemy : MonoBehaviour
             {
                 // Pone en true tambien la variable de wasInside para luego buscarlo cuando deje de verlo
                 wasInside = true;
+                seen = true;
                 // Y resetea si estaba en 0 el tiempo de busqueda
                 timeLeft = 5f;
                 // Si hace un hit es que puede verlo sin obstaculos por lo que devuelve true
@@ -183,8 +184,9 @@ public class Enemy : MonoBehaviour
             }
         }
         // Si no se cumple nada de lo anterior devuelve false
-        if (wasInside) {
-            Vector2 lastLoc = new Vector2(player.transform.position.x, player.transform.position.y);
+        if (wasInside || seen == true) {
+            lastLoc = player.transform.position;
+            seen = false;
         }
         return false;
     }
