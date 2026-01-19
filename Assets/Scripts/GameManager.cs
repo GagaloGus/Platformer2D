@@ -34,9 +34,9 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDie()
     {
-        lives--;
+        playerLives--;
 
-        if (lives <= 0)
+        if (playerLives <= 0)
         {
             // reinicio
         }
