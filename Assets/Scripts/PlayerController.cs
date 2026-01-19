@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum PlayerMoveStates
 {
-    Idle, Walk, Run, JumpUp, JumpDown, Slide, AttackMelee, AttackRanged
+    Idle, Walk, Run, JumpUp, JumpDown, Slide, AttackMelee, AttackRanged, Crouch
 }
 
 public class PlayerController : MonoBehaviour
@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float maxSpeed = 8f;
     public float runSpeedIncrease = 2f;
+    public float crouchSpeedIncrease = 0.3f;
     public float acceleration = 40f;
     public float friction = 40f;
     public float slideVelRequired = 10;
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [Header("Attack")]
     public PlayerBullet Snowball_bullet;
     public float attackDuration;
+    Transform SpawnBulletPosition;
 
 
     [Header("Run Smooth")]
@@ -31,12 +33,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("States")]
     public PlayerMoveStates playerMoveState;
-    [SerializeField] bool isGrounded, isAttacking, isRunning, isSliding;
+    [SerializeField] bool isGrounded, isAttacking, isRunning, isSliding, isCrouching;
 
     [Header("Keys")]
     public KeyCode runKey = KeyCode.LeftShift;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode slideKey = KeyCode.S;
+    public KeyCode crouchKey = KeyCode.S;
     public KeyCode attack_MeleeKey = KeyCode.Mouse0;
     public KeyCode attack_RangeKey = KeyCode.Mouse1;
 
@@ -56,6 +59,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+
+        SpawnBulletPosition = transform.Find("spawnBall");
     }
 
     void Start()
@@ -70,6 +75,43 @@ public class PlayerController : MonoBehaviour
 
         float targetSpeedMult = 1f;
 
+        //Estados de animador y variables
+        StateMachine();
+
+        //Orientacion del collider segun lo que este haciendo el player
+        if (isSliding || isCrouching)
+            capsuleCollider.direction = CapsuleDirection2D.Horizontal;
+        else
+            capsuleCollider.direction = CapsuleDirection2D.Vertical;
+
+        //Multiplicadores de velocidad
+        if (isRunning || isSliding)
+            targetSpeedMult *= runSpeedIncrease;
+
+        if (isCrouching)
+            targetSpeedMult *= crouchSpeedIncrease;
+        
+        if(isGrounded)
+            lastTargetSpeedMult = targetSpeedMult;
+        else
+            targetSpeedMult = lastTargetSpeedMult;
+
+
+        // Reduce la velocidad poco a poco
+        currentSpeedMult = Mathf.MoveTowards(
+            currentSpeedMult,
+            targetSpeedMult,
+            runTransitionSpeed * Time.deltaTime
+        );
+
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
+            Jump();
+
+        animator.SetInteger("player_states", (int)playerMoveState);
+    }
+
+    void StateMachine()
+    {
         if (!isGrounded) //En el aire
         {
             playerMoveState = rb.velocity.y < 0 ? PlayerMoveStates.JumpDown : PlayerMoveStates.JumpUp;
@@ -112,35 +154,21 @@ public class PlayerController : MonoBehaviour
             }
             else //Quieto
                 playerMoveState = PlayerMoveStates.Idle;
+
+            if (!isSliding && isGrounded && Input.GetKey(crouchKey))
+            {
+                isCrouching = true;
+                playerMoveState = PlayerMoveStates.Crouch;
+            }
+            else
+                isCrouching = false;
+
         }
 
         if (Input.GetKeyDown(attack_RangeKey) && !isAttacking && !isSliding) //Ataque rango que tambien se puede hacer en el aire
         {
             StartCoroutine(AttackCoroutine(PlayerMoveStates.AttackRanged));
         }
-
-        capsuleCollider.direction = isSliding ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical;
-
-        if(isRunning || isSliding)
-            targetSpeedMult *= runSpeedIncrease;
-        
-        if(isGrounded)
-            lastTargetSpeedMult = targetSpeedMult;
-        else
-            targetSpeedMult = lastTargetSpeedMult;
-
-
-        // Reduce la velocidad poco a poco
-        currentSpeedMult = Mathf.MoveTowards(
-            currentSpeedMult,
-            targetSpeedMult,
-            runTransitionSpeed * Time.deltaTime
-        );
-
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
-            Jump();
-
-        animator.SetInteger("player_states", (int)playerMoveState);
     }
 
     void FixedUpdate()
@@ -184,7 +212,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerBullet bullet = Instantiate(Snowball_bullet);
             bullet.moveRight = transform.localScale.x > 0;
-            bullet.transform.position = transform.position;
+            bullet.transform.position = SpawnBulletPosition.position;
         }
 
         yield return new WaitForSeconds(attackDuration);
