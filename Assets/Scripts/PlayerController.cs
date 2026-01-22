@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
     public float acceleration = 40f;
     public float friction = 40f;
     public float slideVelRequired = 10;
+    public Vector2 localVel;
+    float inputX;
+
+
 
     [Header("Jump")]
     public float jumpForce = 12f;
@@ -24,8 +28,6 @@ public class PlayerController : MonoBehaviour
     [Header("Attack")]
     public PlayerBullet Snowball_bullet;
     public float attackDuration;
-    Transform SpawnBulletPosition;
-
 
     [Header("Run Smooth")]
     public float runTransitionSpeed = 5f;
@@ -46,13 +48,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Raycast")]
     public float raycastStartHeight;
-    public float raycastDetectionHeight;
-    Vector3 raycastPosition => transform.position + Vector3.down * raycastStartHeight;
+    public float ray_groundedDistance;
+    public float ray_groundAngleDistance;
+    Vector3 raycastPosition => transform.position + transform.up * -1 * raycastStartHeight;
 
     Rigidbody2D rb;
     CapsuleCollider2D capsuleCollider;
     Animator animator;
-    float inputX;
+    Transform SpawnBulletPosition, CenterPos;
 
     private void Awake()
     {
@@ -61,6 +64,7 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider2D>();
 
         SpawnBulletPosition = transform.Find("spawnBall");
+        CenterPos = transform.Find("center");
     }
 
     void Start()
@@ -89,9 +93,9 @@ public class PlayerController : MonoBehaviour
             targetSpeedMult *= runSpeedIncrease;
 
         if (isCrouching)
-            targetSpeedMult *= crouchSpeedIncrease;
-        
-        if(isGrounded)
+            targetSpeedMult = crouchSpeedIncrease;
+
+        if (isGrounded)
             lastTargetSpeedMult = targetSpeedMult;
         else
             targetSpeedMult = lastTargetSpeedMult;
@@ -115,6 +119,8 @@ public class PlayerController : MonoBehaviour
         if (!isGrounded) //En el aire
         {
             playerMoveState = rb.velocity.y < 0 ? PlayerMoveStates.JumpDown : PlayerMoveStates.JumpUp;
+            isRunning = false;
+            isSliding = false;
         }
         else
         {
@@ -153,9 +159,13 @@ public class PlayerController : MonoBehaviour
                     transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
             }
             else //Quieto
+            {
                 playerMoveState = PlayerMoveStates.Idle;
+                isRunning = false;
+                isSliding = false;
+            }
 
-            if (!isSliding && isGrounded && Input.GetKey(crouchKey))
+            if (!isSliding && !isRunning && isGrounded && Input.GetKey(crouchKey))
             {
                 isCrouching = true;
                 playerMoveState = PlayerMoveStates.Crouch;
@@ -175,24 +185,35 @@ public class PlayerController : MonoBehaviour
     {
         CheckGround();
         Move();
+
+        //Aplica una fuerza para que el jugador se "pegue" al suelo
+        if (Mathf.Abs(localVel.x) > 2f && isGrounded && (isRunning || isSliding))
+        {
+            rb.gravityScale = 0;
+            rb.AddForce(transform.up * -1 * 5);
+        }
+        else
+            rb.gravityScale = gravityScale;
     }
 
     void Move()
     {
-        //Evita que el jugador se mueva al atacar
-        if (!isAttacking)
-            rb.AddForce(Vector2.right * inputX * acceleration);
-
         float currentMaxSpeed = maxSpeed * currentSpeedMult;
 
-        // Limitar velocidad maxima (SUAVE)
-        if (Mathf.Abs(rb.velocity.x) > currentMaxSpeed)
-        {
-            rb.velocity = new Vector2(
-               currentMaxSpeed * (rb.velocity.x > 0 ? 1 : -1),
-                rb.velocity.y
-            );
-        }
+        //Velocidad la transforma en dimensiones locales
+        localVel = transform.InverseTransformDirection(rb.velocity);
+
+        //Evita que el jugador se mueva al atacar
+        if (!isAttacking)
+            rb.AddForce(transform.right * inputX * acceleration);
+
+
+        //Limita la velocidad en el eje local
+        localVel.x = Mathf.Clamp(localVel.x, -currentMaxSpeed, currentMaxSpeed);
+
+        //rb.velocity = new Vector2(currentMaxSpeed * (rb.velocity.x > 0 ? 1 : -1), rb.velocity.y);
+        //Vuelve a transformar a dimensiones globales
+        rb.velocity = transform.TransformDirection(localVel);
 
         // Friccion solo cuando deja de moverse
         if (isGrounded && Mathf.Abs(inputX) < 0.01f)
@@ -208,7 +229,7 @@ public class PlayerController : MonoBehaviour
     {
         isAttacking = true;
         playerMoveState = attackType;
-        if(attackType == PlayerMoveStates.AttackRanged)
+        if (attackType == PlayerMoveStates.AttackRanged)
         {
             PlayerBullet bullet = Instantiate(Snowball_bullet);
             bullet.moveRight = transform.localScale.x > 0;
@@ -216,18 +237,22 @@ public class PlayerController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(attackDuration);
-        isAttacking=false;
+        isAttacking = false;
     }
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
 
     void CheckGround()
     {
-        RaycastHit2D hit = Physics2D.Raycast(raycastPosition, Vector2.down, raycastDetectionHeight, LayerMask.GetMask("Ground"));
-        isGrounded = hit.collider != null;
+        RaycastHit2D groundedCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundedDistance, LayerMask.GetMask("Ground"));
+        isGrounded = groundedCast.collider != null;
+
+        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance*2, LayerMask.GetMask("Ground"));
+        float slopeAngle = Vector2.SignedAngle(groundCheckCast.normal, Vector2.up)*-1;
+        transform.rotation = Quaternion.Euler(0f, 0f, slopeAngle);
     }
 
 #if UNITY_EDITOR
@@ -236,19 +261,25 @@ public class PlayerController : MonoBehaviour
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
 
-        float input = rb.velocity.x / 8;
+        if (CenterPos == null)
+            CenterPos = transform.Find("center");
+
+        float input = localVel.x / 8;
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(raycastPosition, Vector2.down * raycastDetectionHeight);
-        Gizmos.DrawRay(raycastPosition + Vector3.left * 0.25f, Vector2.right * 0.5f);
+        Gizmos.DrawRay(raycastPosition + transform.right * -0.25f, transform.right * 0.5f);
+        Gizmos.DrawRay(raycastPosition + transform.right*0.1f, transform.up * -1 * ray_groundedDistance);
 
-        Vector3 velPos = transform.position + Vector3.right * input;
-        bool right = velPos.x > transform.position.x;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawRay(raycastPosition + transform.right*-0.1f, transform.up * -1 * ray_groundAngleDistance);
+        Gizmos.DrawWireSphere(raycastPosition, 0.1f);
+
+        bool right = input > 0;
         Gizmos.color = right ? Color.red : Color.cyan;
-        Gizmos.DrawRay(transform.position, Vector3.right * input);
+        Gizmos.DrawRay(CenterPos.position, transform.right * input);
 
-        Gizmos.DrawRay(velPos, new Vector2(right ? -1 : 1, 1) / 4);
-        Gizmos.DrawRay(velPos, new Vector2(right ? -1 : 1, -1) / 4);
+        //Gizmos.DrawRay(velPos, new Vector2(right ? -1 : 1, 1) / 4);
+        //Gizmos.DrawRay(velPos, new Vector2(right ? -1 : 1, -1) / 4);
 
     }
 #endif

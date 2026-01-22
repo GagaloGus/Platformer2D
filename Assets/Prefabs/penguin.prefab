@@ -87,8 +87,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7132884336357811220}
   - component: {fileID: 8620330783953823802}
-  - component: {fileID: 1491546442041673381}
   - component: {fileID: 6392748640821200720}
+  - component: {fileID: 1491546442041673381}
   - component: {fileID: 7455991172113803293}
   - component: {fileID: 2628277370796292680}
   m_Layer: 0
@@ -112,6 +112,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7016854800832832584}
+  - {fileID: 8802649283043412457}
+  - {fileID: 7892997924819102354}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8620330783953823802
@@ -126,11 +128,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c029cfe64007b5546a9fa05f889119e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 8
-  runSpeedIncrease: 2
+  maxSpeed: 5
+  runSpeedIncrease: 2.5
+  crouchSpeedIncrease: 0.2
   acceleration: 40
   friction: 20
-  slideVelRequired: 16
+  slideVelRequired: 12
+  localVel: {x: 0, y: 0}
   jumpForce: 12
   gravityScale: 3
   Snowball_bullet: {fileID: -8582091728229918381, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
@@ -141,13 +145,43 @@ MonoBehaviour:
   isAttacking: 0
   isRunning: 0
   isSliding: 0
+  isCrouching: 0
   runKey: 304
   jumpKey: 32
   slideKey: 115
+  crouchKey: 115
   attack_MeleeKey: 323
   attack_RangeKey: 324
   raycastStartHeight: 1.12
-  raycastDetectionHeight: 0.14
+  ray_groundedDistance: 0.21
+  ray_groundAngleDistance: 0.32
+--- !u!50 &6392748640821200720
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490572058463344203}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 5a0861eb18fd24048941e04f10194b02, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!70 &1491546442041673381
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -183,33 +217,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.8979939}
   m_Size: {x: 1.7300001, y: 2.5959876}
   m_Direction: 0
---- !u!50 &6392748640821200720
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6490572058463344203}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 5a0861eb18fd24048941e04f10194b02, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!212 &7455991172113803293
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -283,3 +290,65 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &6728250788986466523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7892997924819102354}
+  m_Layer: 0
+  m_Name: center
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7892997924819102354
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6728250788986466523}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.06, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7132884336357811220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8383717192132316990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8802649283043412457}
+  m_Layer: 0
+  m_Name: spawnBall
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8802649283043412457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8383717192132316990}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.27, y: -0.69, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7132884336357811220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
