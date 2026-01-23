@@ -22,21 +22,35 @@ public class Enemy : MonoBehaviour
 
     }
 
+    void GetDamage(int dmg)
+    {
+        health-= dmg;
+
+        if (health <= 0)
+        {
+            print("ay");
+            Destroy(gameObject);
+        }
+        else
+        {
+            print("mamon");
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("PlayerAttackBox"))
         {
-            health--;
+            GetDamage(1);
+        }
+    }
 
-            if(health == 0)
-            {
-                print("ay");
-                Destroy(gameObject);
-            }
-            else
-            {
-                print("mamon");
-            }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.GetComponent<PlayerBullet>())
+        {
+            GetDamage(1);
+            Destroy(collision.gameObject);
         }
     }
 }
