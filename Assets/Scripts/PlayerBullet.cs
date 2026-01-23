@@ -4,32 +4,38 @@ using UnityEngine;
 
 public class PlayerBullet : MonoBehaviour
 {
-    public bool moveRight;
-    public float speed, friction;
-    [SerializeField] float currentSpeed;
+    public Vector2 shootDirection;
+    public float speed;
 
     Rigidbody2D rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        currentSpeed = speed;
+        //currentSpeed = speed;
+    }
+
+    private void Start()
+    {
+        rb.velocity = shootDirection * speed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = Vector2.right * (moveRight ? 1 : -1) * currentSpeed;
-
-        //Reduce la velocidad periodicamente
-        currentSpeed = Mathf.MoveTowards(
-            currentSpeed, 0, Time.deltaTime * friction
-        );
-
-        if (Mathf.Abs(currentSpeed) < 0.1f)
+        if (Mathf.Abs(rb.velocity.magnitude) < 0.5f)
         {
             print("Hola jeff");
             Destroy(gameObject);
         } 
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Vector2 velPos = (Vector2)transform.position + rb.velocity / 3;
+        Gizmos.DrawRay(transform.position, rb.velocity / 3);
+        Gizmos.DrawWireCube(velPos, Vector3.one / 2);
+    }
+#endif
 }
