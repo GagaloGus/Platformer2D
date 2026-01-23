@@ -32,9 +32,13 @@ public class Enemy : MonoBehaviour
     public bool isGrounded = false;
     public bool canJump = true;
 
+    [Header("Patrol Points")]
+    public List<Vector2> PatrolPoints;
+
     private Rigidbody2D rb;
-    private bool wasInside = false;
+    private bool wasInside = false, isWaiting = false;
     private Vector2 lastLoc;
+    private int currentPointIndex = 0;
 
     void Start()
     {
@@ -50,6 +54,11 @@ public class Enemy : MonoBehaviour
         if (IsTargetInCone(player.transform))
         {
             Move(player.transform.position);
+        }
+
+        if (IsTargetInCone(player.transform) == false)
+        {
+            Patrol();
         }
 
         // Comprueba constantemente si tiene un obstaculo mas alto que él
@@ -138,6 +147,35 @@ public class Enemy : MonoBehaviour
         Vector2 move = new Vector2(dir, 0f) * speed * Time.deltaTime;
         transform.Translate(move);
     }
+    void Patrol()
+    {
+        Vector2 target = PatrolPoints[currentPointIndex];
+
+        if (Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(target.x) && isWaiting == false)
+        {
+            Move(target);
+            //Debug.Log("Moviendo... Enemigo X: " + Mathf.RoundToInt(transform.position.x) + " Target X: " + Mathf.RoundToInt(target.x));
+        }
+        else
+        {
+            //Debug.Log("Llegué al punto " + currentPointIndex);
+            StartCoroutine(wait());
+
+            currentPointIndex++;
+
+            if (currentPointIndex >= PatrolPoints.Count)
+            {
+                currentPointIndex = 0;
+            }
+        }
+    }
+
+    IEnumerator wait()
+    {
+        isWaiting = true;
+        yield return new WaitForSeconds(2);
+        isWaiting = false;
+    }
 
     public void Search()
     {
@@ -161,6 +199,7 @@ public class Enemy : MonoBehaviour
             timeLeft = 5f;
         }
     }
+
 
     public bool IsTargetInCone(Transform target)
     {
@@ -258,5 +297,12 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawRay(transform.position, upRayDirection);
         Gizmos.DrawRay(transform.position, downRayDirection);
         Gizmos.DrawLine(transform.position + downRayDirection, transform.position + upRayDirection);
+
+        for (int i = 0; i < PatrolPoints.Count; i++)
+        {
+            Gizmos.color = Color.white;
+
+            Gizmos.DrawWireSphere(PatrolPoints[i], 1);
+        }
     }
 }
