@@ -1,0 +1,186 @@
+El problema principal en tu script es que IsTargetInCone tiene "efectos secundarios". Cada vez que la llamas (y la llamas dos veces por frame en el Update), el código puede cambiar variables como wasInside, coneDirection y timeLeft.
+Además, al ejecutar el OverlapCircle (la esfera) al final de la función, el enemigo se da la vuelta y detecta al jugador en 360º antes de decidir si debe seguirlo o buscarlo.
+Aquí tienes el script corregido. He separado la detección (saber si te ve) de la lógica (decidir qué hacer):
+csharp
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    private GameObject player, objDetector;
+
+    [Header("Enemy Movement")]
+    public float speed = 5f;
+    public float dir = -1f; // Inicializar
+    public float jumpForce = 6f;
+
+    [Header("Obstacle Detection")]
+    public float raycastDetection = 1f;
+    public float raycastDetectionDown = 1f;
+
+    [Header("Enemy Field of View")]
+    public float angle = 30.0f;
+    public float rayRange = 10.0f;
+    public float coneDirection = 180;
+    
+    [Header("Detection Settings")]
+    public LayerMask targetMask;
+    public LayerMask obstructionMask;
+    public float detectionRadius = 1f;
+    
+    [Header("Time for search Player")]
+    public float timeLeft = 5f;
+
+    [Header("Actions Check")]
+    public bool wallFound = false;
+    public bool isGrounded = false;
+    public bool canJump = true;
+
+    private Rigidbody2D rb;
+    private bool wasInside = false;
+    private bool isCurrentlyVisible = false; // Nueva: para detectar el momento en que se pierde de vista
+    private Vector2 lastLoc;
+
+    void Start()
+    {
+        player = FindAnyObjectByType<PlayerMove>().gameObject;
+        objDetector = transform.GetChild(0).gameObject;
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    void Update()
+    {
+        // 1. COMPROBAR VISIÓN (Solo una vez por frame)
+        bool canSeeHim = IsTargetInCone(player.transform);
+
+        // 2. LÓGICA DE COMPORTAMIENTO
+        if (canSeeHim)
+        {
+            isCurrentlyVisible = true;
+            wasInside = true;
+            timeLeft = 5f; // Mantener el tiempo a tope mientras lo vemos
+            
+            Move(player.transform.position);
+        }
+        else
+        {
+            // Si lo veíamos justo el frame anterior y ahora no...
+            if (isCurrentlyVisible)
+            {
+                lastLoc = player.transform.position; // GUARDAR POSICIÓN SOLO UNA VEZ
+                isCurrentlyVisible = false;
+            }
+
+            if (wasInside)
+            {
+                Search();
+            }
+        }
+
+        // 3. FÍSICAS Y ENTORNO
+        CheckWall();
+        CheckGround();
+        if (wallFound && isGrounded && canJump) Jump();
+    }
+
+    // IsTargetInCone ahora SOLO RESPONDE SI VE O NO VE. No cambia direcciones ni variables de tiempo.
+    public bool IsTargetInCone(Transform target)
+    {
+        Vector3 dirToTarget = (target.position - transform.position);
+        float dist = dirToTarget.magnitude;
+
+        if (dist > rayRange) return false;
+
+        // Detección por proximidad (Círculo 360º)
+        if (dist <= detectionRadius) return true;
+
+        // Detección por Cono
+        Vector3 baseDirection = Quaternion.Euler(0, 0, coneDirection) * transform.right;
+        float angleToTarget = Vector3.Angle(baseDirection, dirToTarget);
+
+        if (angleToTarget < angle / 2.0f)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dirToTarget.normalized, rayRange, obstructionMask | targetMask);
+            if (hit.collider != null && ((1 << hit.collider.gameObject.layer) & targetMask) != 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void Move(Vector2 loc)
+    {
+        // Mirar a la derecha
+        if (transform.position.x < loc.x)
+        {
+            dir = 1f;
+            GetComponent<SpriteRenderer>().flipX = true;
+            objDetector.transform.localPosition = new Vector2(0.9f, 1f); // Usar localPosition es más limpio
+            coneDirection = 0f;
+        }
+        // Mirar a la izquierda
+        else if (transform.position.x > loc.x)
+        {
+            dir = -1f;
+            GetComponent<SpriteRenderer>().flipX = false;
+            objDetector.transform.localPosition = new Vector2(-0.9f, 1f);
+            coneDirection = 180f;
+        }
+
+        Vector2 move = new Vector2(dir, 0f) * speed * Time.deltaTime;
+        transform.Translate(move);
+    }
+
+    public void Search()
+    {
+        // Solo se mueve si no ha llegado a la última posición conocida
+        if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f)
+        {
+            Move(lastLoc);
+        }
+        else
+        {
+            Debug.Log("Llegué al último punto visto");
+        }
+        
+        timeLeft -= Time.deltaTime;
+        if (timeLeft <= 0)
+        {
+            wasInside = false;
+            timeLeft = 5f;
+            Debug.Log("Búsqueda terminada");
+        }
+    }
+
+    // --- MÉTODOS DE FÍSICAS (Sin cambios, solo optimizados) ---
+    void CheckWall() {
+        Vector2 rayDir = (dir > 0) ? Vector2.right : Vector2.left;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, raycastDetection, LayerMask.GetMask("Ground"));
+        wallFound = hit.collider != null;
+    }
+
+    void CheckGround() {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastDetectionDown, LayerMask.GetMask("Ground"));
+        isGrounded = hit.collider != null;
+    }
+
+    void Jump() {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, 0, coneDirection) * transform.right * rayRange);
+    }
+}
+Usa el código con precaución.
+
+Cambios Clave realizados:
+Eliminación de efectos secundarios: IsTargetInCone ya no cambia el dir ni el timeLeft. Solo devuelve un bool.
+isCurrentlyVisible: Esta variable nueva detecta el frame exacto en el que el jugador desaparece. Ahí es donde guardamos lastLoc = player.transform.position. Así se guarda una sola vez.
+Lógica del Update: Ahora es lineal. O lo ve, o lo busca. No hay conflictos de llamar a la misma función con distintos resultados.
+objDetector.transform.localPosition: He cambiado la posición del detector a local. Es mucho más estable que sumar la posición del mundo manualmente.
+Detección de Proximidad: La esfera ahora funciona dentro de la lógica de "Si está muy cerca, lo veo", pero el enemigo solo se dará la vuelta para seguirte si el código entra en el Move() dentro del Update.

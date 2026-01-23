@@ -23,8 +23,9 @@ public class Enemy : MonoBehaviour
     [Header("Detection Settings")]
     public LayerMask targetMask;
     public LayerMask obstructionMask;
+    public float detectionRadius = 1f;
     [Header("Time for search Player")]
-    public float timeLeft = 5f;
+    public float timeLeft = 1f;
 
     [Header("Actions Check")]
     public bool wallFound = false;
@@ -32,7 +33,7 @@ public class Enemy : MonoBehaviour
     public bool canJump = true;
 
     private Rigidbody2D rb;
-    private bool wasInside = false, seen = false;
+    private bool wasInside = false;
     private Vector2 lastLoc;
 
     void Start()
@@ -115,7 +116,7 @@ public class Enemy : MonoBehaviour
         {
             // Cambia su dirección de movimiento hacia la derecha
             dir = 1f;
-
+            GetComponent<SpriteRenderer>().flipX = true;
             // Cambia la ubicación del detector de obstaculos a la derecha
             objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
             // Cambia la rotacion del campo de vision para que mire a su derecha
@@ -127,7 +128,7 @@ public class Enemy : MonoBehaviour
         {
             // Cambia su dirección de movimiento hacia la izquierda
             dir = -1f;
-
+            GetComponent<SpriteRenderer>().flipX = false;
             // Cambia la ubicación del detector de obstaculos a la izquierda
             objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
             // Cambia la rotacion del campo de vision para que mire a su izquierda
@@ -140,13 +141,24 @@ public class Enemy : MonoBehaviour
 
     public void Search()
     {
-        Move(lastLoc);
+        if(Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(lastLoc.x))
+        {
+            Move(lastLoc);
+            Debug.Log("Enemy: " + Mathf.RoundToInt(transform.position.x) + " | Target: " + Mathf.RoundToInt(lastLoc.x));
+        }
+        else
+        {
+            Debug.Log("Llegué");
+        }
+        
         // Este metodo simplemente inicia una cuenta atras
         timeLeft -= Time.deltaTime;
         // Si llega a 0, establece 'false' a wasInside para que deje de buscarlo si sigue sin verlo
         if (timeLeft <= 0)
         {
+            Debug.Log("Tiempo 0");
             wasInside = false;
+            timeLeft = 5f;
         }
     }
 
@@ -166,6 +178,8 @@ public class Enemy : MonoBehaviour
         // Calcula el ángulo de los gizmos
         float angleToTarget = Vector3.Angle(baseDirection, dirToTarget);
 
+        bool seen = false;
+
         if (angleToTarget < angle / 2.0f)
         {
             // Crea un Raycast en linea recta que detecta si el objetivo esta a la vista sin obstaculos de por medio
@@ -176,6 +190,7 @@ public class Enemy : MonoBehaviour
             {
                 // Pone en true tambien la variable de wasInside para luego buscarlo cuando deje de verlo
                 wasInside = true;
+                // Y activa seen para luego guardar la posicion una vez
                 seen = true;
                 // Y resetea si estaba en 0 el tiempo de busqueda
                 timeLeft = 5f;
@@ -183,11 +198,33 @@ public class Enemy : MonoBehaviour
                 return true;
             }
         }
-        // Si no se cumple nada de lo anterior devuelve false
+        Collider2D hitS = Physics2D.OverlapCircle(transform.position, detectionRadius, targetMask);
+
+        if (hitS != null)
+        {
+            Debug.Log("Visto");
+            if (dir == 1f)
+            {
+                coneDirection = 180;
+                GetComponent<SpriteRenderer>().flipX = false;
+                objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
+                dir = -1f;
+            }
+            else if (dir == -1f)
+            {
+                coneDirection = 0;
+                GetComponent<SpriteRenderer>().flipX = true;
+                objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
+                dir = 1f;
+            }
+        }
+
+        // Guarda la ultima poscion vista del target
         if (wasInside || seen == true) {
             lastLoc = player.transform.position;
             seen = false;
         }
+        // Si no se cumple nada de lo anterior devuelve false
         return false;
     }
 
@@ -205,11 +242,11 @@ public class Enemy : MonoBehaviour
             Gizmos.DrawRay(enemyPoS, Vector2.left * raycastDetection);
         }
         Gizmos.DrawRay(enemyPoS, Vector2.down * raycastDetectionDown);
-    }
 
-    // Metodo par ver visualmente en el editor el gizmos del campo visual
-    void OnDrawGizmosSelected()
-    {
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
         Quaternion upRayRotation = Quaternion.AngleAxis(-(angle / 2.0f) + coneDirection, Vector3.forward);
         Quaternion downRayRotation = Quaternion.AngleAxis((angle / 2.0f) + coneDirection, Vector3.forward);
 
@@ -221,6 +258,5 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawRay(transform.position, upRayDirection);
         Gizmos.DrawRay(transform.position, downRayDirection);
         Gizmos.DrawLine(transform.position + downRayDirection, transform.position + upRayDirection);
-
     }
 }
