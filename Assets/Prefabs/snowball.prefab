@@ -99,10 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d238c0f38e17c34cb73183fd3691eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveRight: 0
-  speed: 8
-  friction: 3
-  currentSpeed: 0
+  shootDirection: {x: 0, y: 0}
+  speed: 5
 --- !u!50 &-1665122703790384058
 Rigidbody2D:
   serializedVersion: 4
@@ -116,10 +114,10 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 0.5
   m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 2bd08282ec8de254da73457e2018454c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -139,7 +137,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 6985340918933022679}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 2bd08282ec8de254da73457e2018454c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
