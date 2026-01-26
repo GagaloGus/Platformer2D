@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6594d0d302ccaec49873aee084fa2905
+guid: 370db2fc152e04e4ca12ec1ec82e8579
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -121,7 +121,133 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: arboles_0
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 67
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d61e41dc1729eb41b9d7921c5df17d7
+      internalID: 2076591160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arboles_1
+      rect:
+        serializedVersion: 2
+        x: 967
+        y: 67
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b498536aaa05fc46aa05c8c299f4f1f
+      internalID: 708663539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arboles_2
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 67
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b434bd3d750174049a2474dc5c37da34
+      internalID: -1350111976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arboles_3
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 519
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d195660fa2bb60c4a9519b0495fe8220
+      internalID: 1068193552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arboles_4
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 519
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adb5bf214ac5b414bb33c8171577fa8e
+      internalID: 1062480144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arboles_5
+      rect:
+        serializedVersion: 2
+        x: 967
+        y: 519
+        width: 382
+        height: 437
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 521584676450f084cbdccb4f31964d25
+      internalID: 1840034696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +258,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      arboles_0: 358017584
+      arboles_1: -1671139043
+      arboles_2: -676543899
+      arboles_3: 1991840160
+      arboles_4: 2068212632
+      arboles_5: 2076591160
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
