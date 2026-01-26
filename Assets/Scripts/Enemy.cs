@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,7 @@ public class Enemy : MonoBehaviour
     public List<Vector2> PatrolPoints;
 
     private Rigidbody2D rb;
-    private bool wasInside = false, isWaiting = false;
+    private bool wasInside = false, isWaiting = false, canPatrol = true;
     private Vector2 lastLoc;
     private int currentPointIndex = 0;
 
@@ -56,7 +57,7 @@ public class Enemy : MonoBehaviour
             Move(player.transform.position);
         }
 
-        if (IsTargetInCone(player.transform) == false)
+        if (IsTargetInCone(player.transform) == false && canPatrol)
         {
             Patrol();
         }
@@ -172,9 +173,11 @@ public class Enemy : MonoBehaviour
 
     IEnumerator wait()
     {
+        canPatrol = false;
         isWaiting = true;
         yield return new WaitForSeconds(2);
         isWaiting = false;
+        canPatrol = true;
     }
 
     public void Search()
