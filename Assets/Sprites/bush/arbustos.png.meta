@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7b5aabddc741f7c4d8a2f49e03a336bf
+guid: 35c9b823e9869f24083ba882c357d041
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -121,7 +121,133 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: arbustos_0
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 527
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28037929f6dffa544bd587359467b41a
+      internalID: 965247816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arbustos_1
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 527
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8099c4c098706a847b4372502225ed27
+      internalID: 785159088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arbustos_2
+      rect:
+        serializedVersion: 2
+        x: 1003
+        y: 527
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5506b557a4fe81647b1a5becd0ffcbe8
+      internalID: 250105797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arbustos_3
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 128
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6a37f0fcd616e542a439b16c0c6adcc
+      internalID: -340729706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arbustos_4
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 128
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c4b755b91969e442bcd22f92adf2830
+      internalID: -1105404639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arbustos_5
+      rect:
+        serializedVersion: 2
+        x: 1003
+        y: 128
+        width: 396
+        height: 383
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 967e7c07bd078ef4694180fda4e7069d
+      internalID: 438799850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +258,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      arbustos_0: -830969526
+      arbustos_1: 965247816
+      arbustos_2: 785159088
+      arbustos_3: 250105797
+      arbustos_4: -340729706
+      arbustos_5: -1105404639
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
