@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Score")]
     private int score;
+    private int highScore;
 
     private void Awake()
     {
@@ -26,8 +27,10 @@ public class GameManager : MonoBehaviour
         } else
         {
             Destroy(gameObject);
+            return;
         }
        
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
     void Start()
@@ -40,6 +43,13 @@ public class GameManager : MonoBehaviour
     public void AddScore(int points)
     {
         score += points;
+
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
+        }
     }
 
     public void PauseGame()
@@ -62,6 +72,16 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public int GetHighScore()
+    {
+        return highScore;
     }
 
     public void Victoria()
