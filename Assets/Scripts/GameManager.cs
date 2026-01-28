@@ -37,9 +37,9 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Playing;
     }
 
-    public void AddScore(int amount)
+    public void AddScore(int points)
     {
-        score += amount;
+        score += points;
     }
 
     public void PauseGame()
