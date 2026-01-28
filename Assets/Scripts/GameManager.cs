@@ -7,7 +7,11 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
-    private int playerLives = 3;
+    public enum GameState { Menu, Playing, Paused, GameOver}
+    public GameState currentState;
+
+    private int score = 0;
+    //private int playerLives = 3;
 
     private void Awake()
     {
@@ -24,21 +28,49 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        ChangeState(GameState.Menu);
+    }
+
+    public void ChangeState(GameState newState)
+    {
+        currentState = newState;
+    }
+
+    public void StartGame()
+    {
+        score = 0;
+        ChangeState(GameState.Playing);
         
     }
 
-    void Update()
+    public void PauseGame()
     {
-        
+        Time.timeScale = 0f;
+        ChangeState(GameState.Paused);
     }
 
-    public void PlayerDie()
+    public void ResumeGame()
     {
-        playerLives--;
-
-        if (playerLives <= 0)
-        {
-            // reinicio
-        }
+        Time.timeScale = 0f;
+        ChangeState(GameState.Playing);
     }
+
+    public void AddScore (int amount)
+    {
+        score += amount;
+    }
+
+    /* public void PlayerDie()
+     {
+         playerLives--;
+
+         if (playerLives <= 0)
+         {
+             ChangeState(GameState.GameOver);
+         }
+     }*/
+
+    public int GetScore() => score;
+    //public int GetLives() => playerLives;
+
 }
