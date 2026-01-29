@@ -7,11 +7,15 @@ public class ScoreUI : MonoBehaviour
 {
     
     public TMP_Text scoreText;
-    public TMP_Text highScoreText;
+
+
+    void Awake()
+    {
+        scoreText = GetComponent<TMP_Text>();
+    }
 
     void Update()
     {
-        scoreText.text = "Score: " + GameManager.Instance.GetScore();
-        highScoreText.text = "HighScore: " + GameManager.Instance.GetHighScore();
+        scoreText.text = "Score: " + GameManager.Instance.GetScore()+ "\nHighscore: " + GameManager.Instance.GetHighScore();
     }
 }
