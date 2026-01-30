@@ -6,16 +6,16 @@ using UnityEngine.EventSystems;
 
 public class Enemy : MonoBehaviour
 {
-    private GameObject player, objDetector;
+    protected GameObject player, objDetector;
 
     [Header("Enemy Movement")]
     public float speed = 5f;
-    public float dir;
-    public float jumpForce = 6f;
+    public float dir = -1;
+    public float jumpForce = 15f;
 
     [Header("Obstacle Detection")]
-    public float raycastDetection;
-    public float raycastDetectionDown;
+    public float raycastDetection = 1;
+    public float raycastDetectionDown = 0.5f;
 
     [Header("Enemy Field of View")]
     public float angle = 30.0f;
@@ -24,9 +24,9 @@ public class Enemy : MonoBehaviour
     [Header("Detection Settings")]
     public LayerMask targetMask;
     public LayerMask obstructionMask;
-    public float detectionRadius = 1f;
+    public float detectionRadius = 2f;
     [Header("Time for search Player")]
-    public float timeLeft = 1f;
+    public float timeLeft = 5f;
 
     [Header("Actions Check")]
     public bool wallFound = false;
@@ -36,19 +36,19 @@ public class Enemy : MonoBehaviour
     [Header("Patrol Points")]
     public List<Vector2> PatrolPoints;
 
-    private Rigidbody2D rb;
-    private bool wasInside = false, isWaiting = false, canPatrol = true, seen = false;
-    private Vector2 lastLoc;
-    private int currentPointIndex = 0;
+    protected Rigidbody2D rb;
+    protected bool wasInside = false, isWaiting = false, canPatrol = true, seen = false;
+    protected Vector2 lastLoc;
+    protected int currentPointIndex = 0;
 
-    void Start()
+    protected void Start()
     {
         player = FindAnyObjectByType<PlayerMove>().gameObject;
         objDetector = transform.GetChild(0).gameObject;
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    protected void Update()
     {
         // Si el objetivo a buscar esta en pleno campo de vision procede a moverse hacia dicho objetivo
         // O si el objetivo dejó de verlo pero lo esta buscando (es decir con el wasInside)
@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
             Move(player.transform.position);
         }
 
-        if (IsTargetInCone(player.transform) == false && canPatrol)
+        if (IsTargetInCone(player.transform) == false && canPatrol && PatrolPoints.Count > 0)
         {
             Patrol();
         }
@@ -83,12 +83,15 @@ public class Enemy : MonoBehaviour
     }
 
     // Método que comprueba si hay algun objeto con el layer = 'Ground', delante de él
-    void CheckWall()
+    protected void CheckWall()
     {
         Vector2 enemyPoS = new Vector2(transform.position.x, transform.position.y);
         // Comprueba hacia que dirección esta mirando este objeto
         if (dir > 0f)
         {
+            coneDirection = 0;
+            GetComponent<SpriteRenderer>().flipX = true;
+            objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
             // Crea un RayCastHit2D en líenea recta hacia la dirección establecida, que dará true si colisiona con un objeto con layer 'Ground'
             RaycastHit2D hit = Physics2D.Raycast(enemyPoS, Vector2.right, raycastDetection, LayerMask.GetMask("Ground"));
             // Si hace hit establece 'true' a la variable wallFound
@@ -96,6 +99,9 @@ public class Enemy : MonoBehaviour
         }
         else
         {
+            coneDirection = 180;
+            GetComponent<SpriteRenderer>().flipX = false;
+            objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
             // Crea un RayCastHit2D en líenea recta hacia la dirección establecida, que devolverá true si colisiona con un objeto con layer 'Ground'
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, raycastDetection, LayerMask.GetMask("Ground"));
             // Si hace hit establece 'true' a la variable wallFound
@@ -104,7 +110,7 @@ public class Enemy : MonoBehaviour
     }
 
     // Método para comprobar si el objeto debajo de este mismo, tiene el layer = 'Ground'
-    void CheckGround()
+    protected void CheckGround()
     {
         Vector2 enemyPoS = new Vector2(transform.position.x, transform.position.y);
         // Crea un RayCastHit2D hacia abajo desde su posición, que devolverá true si colisiona con un objeto con layer 'Ground'
@@ -114,12 +120,12 @@ public class Enemy : MonoBehaviour
     }
 
     // Método para impulsar al objeto hacia arriba
-    void Jump()
+    protected void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
-    void Move(Vector2 loc)
+    protected void Move(Vector2 loc)
     {
         // Calcula si el objetivo se encuentra a su derecha
         if (transform.position.x - loc.x < 0)
@@ -148,7 +154,7 @@ public class Enemy : MonoBehaviour
         Vector2 move = new Vector2(dir, 0f) * speed * Time.deltaTime;
         transform.Translate(move);
     }
-    void Patrol()
+    protected void Patrol()
     {
         Vector2 target = PatrolPoints[currentPointIndex];
 
@@ -172,7 +178,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    IEnumerator wait()
+    protected IEnumerator wait()
     {
         canPatrol = false;
         isWaiting = true;
@@ -181,7 +187,7 @@ public class Enemy : MonoBehaviour
         canPatrol = true;
     }
 
-    public void Search()
+    protected void Search()
     {
         canPatrol = false;
         // Solo se mueve si no ha llegado a la última posición conocida
@@ -204,7 +210,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public bool IsTargetInCone(Transform target)
+    protected bool IsTargetInCone(Transform target)
     {
         Vector3 dirToTarget = (target.position - transform.position);
         float dist = dirToTarget.magnitude;
@@ -214,6 +220,8 @@ public class Enemy : MonoBehaviour
         {
             canPatrol = false;
             wasInside = true;
+            seen = true;
+            timeLeft = 5f;
             return true;
         }
 
@@ -270,7 +278,7 @@ public class Enemy : MonoBehaviour
     }
 
     // Metodo par ver visualmente en el editor el gizmos de deteccion de obstaculos y suelo
-    private void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
         Vector2 enemyPoS = new Vector2(transform.position.x, transform.position.y);
         Gizmos.color = Color.red;
@@ -300,11 +308,14 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawRay(transform.position, downRayDirection);
         Gizmos.DrawLine(transform.position + downRayDirection, transform.position + upRayDirection);
 
-        for (int i = 0; i < PatrolPoints.Count; i++)
+        if(PatrolPoints.Count > 0)
         {
-            Gizmos.color = Color.white;
+            for (int i = 0; i < PatrolPoints.Count; i++)
+            {
+                Gizmos.color = Color.white;
 
-            Gizmos.DrawWireSphere(PatrolPoints[i], 1);
+                Gizmos.DrawWireSphere(PatrolPoints[i], 1);
+            }
         }
     }
 }
