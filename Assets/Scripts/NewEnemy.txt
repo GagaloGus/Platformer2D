@@ -184,3 +184,73 @@ isCurrentlyVisible: Esta variable nueva detecta el frame exacto en el que el jug
 Lógica del Update: Ahora es lineal. O lo ve, o lo busca. No hay conflictos de llamar a la misma función con distintos resultados.
 objDetector.transform.localPosition: He cambiado la posición del detector a local. Es mucho más estable que sumar la posición del mundo manualmente.
 Detección de Proximidad: La esfera ahora funciona dentro de la lógica de "Si está muy cerca, lo veo", pero el enemigo solo se dará la vuelta para seguirte si el código entra en el Move() dentro del Update.
+
+
+************************************************************************************************************************************************************************************************************************
+                                                                                                                        ANTIGUO
+************************************************************************************************************************************************************************************************************************
+    /*public bool IsTargetInCone(Transform target)
+    {
+        // Mide la distancia entre el enemigo y el jugador
+        Vector3 dirToTarget = (target.position - transform.position);
+
+        // Si esta demasiado lejod del gizmos devuelve falso
+        if (dirToTarget.magnitude > rayRange) return false;
+
+        // 2. Angle Check
+        // Convert coneDirection to a base vector (matches your Gizmo logic)
+        // Convierte el angulo del gizmos en un vector3
+        Vector3 baseDirection = Quaternion.Euler(0, 0, coneDirection) * transform.right;
+
+        // Calcula el ángulo de los gizmos
+        float angleToTarget = Vector3.Angle(baseDirection, dirToTarget);
+
+        bool seen = false;
+
+        if (angleToTarget < angle / 2.0f)
+        {
+            // Crea un Raycast en linea recta que detecta si el objetivo esta a la vista sin obstaculos de por medio
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dirToTarget.normalized, rayRange, obstructionMask | targetMask);
+
+            
+            if (hit.collider != null && ((1 << hit.collider.gameObject.layer) & targetMask) != 0)
+            {
+                // Pone en true tambien la variable de wasInside para luego buscarlo cuando deje de verlo
+                wasInside = true;
+                // Y activa seen para luego guardar la posicion una vez
+                seen = true;
+                // Y resetea si estaba en 0 el tiempo de busqueda
+                timeLeft = 5f;
+                // Si hace un hit es que puede verlo sin obstaculos por lo que devuelve true
+                return true;
+            }
+        }
+        Collider2D hitS = Physics2D.OverlapCircle(transform.position, detectionRadius, targetMask);
+
+        if (hitS != null)
+        {
+            Debug.Log("Visto");
+            if (dir == 1f)
+            {
+                coneDirection = 180;
+                GetComponent<SpriteRenderer>().flipX = false;
+                objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
+                dir = -1f;
+            }
+            else if (dir == -1f)
+            {
+                coneDirection = 0;
+                GetComponent<SpriteRenderer>().flipX = true;
+                objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
+                dir = 1f;
+            }
+        }
+
+        // Guarda la ultima poscion vista del target
+        if (wasInside || seen == true) {
+            lastLoc = player.transform.position;
+            seen = false;
+        }
+        // Si no se cumple nada de lo anterior devuelve false
+        return false;
+    }*/

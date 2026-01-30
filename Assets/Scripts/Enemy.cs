@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     public List<Vector2> PatrolPoints;
 
     private Rigidbody2D rb;
-    private bool wasInside = false, isWaiting = false, canPatrol = true;
+    private bool wasInside = false, isWaiting = false, canPatrol = true, seen = false;
     private Vector2 lastLoc;
     private int currentPointIndex = 0;
 
@@ -169,6 +169,7 @@ public class Enemy : MonoBehaviour
                 currentPointIndex = 0;
             }
         }
+
     }
 
     IEnumerator wait()
@@ -182,61 +183,53 @@ public class Enemy : MonoBehaviour
 
     public void Search()
     {
-        if(Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(lastLoc.x))
+        canPatrol = false;
+        // Solo se mueve si no ha llegado a la última posición conocida
+        if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f)
         {
             Move(lastLoc);
-            Debug.Log("Enemy: " + Mathf.RoundToInt(transform.position.x) + " | Target: " + Mathf.RoundToInt(lastLoc.x));
         }
         else
         {
-            Debug.Log("Llegué");
+            Debug.Log("Llegué al último punto visto");
         }
-        
-        // Este metodo simplemente inicia una cuenta atras
+
         timeLeft -= Time.deltaTime;
-        // Si llega a 0, establece 'false' a wasInside para que deje de buscarlo si sigue sin verlo
         if (timeLeft <= 0)
         {
-            Debug.Log("Tiempo 0");
             wasInside = false;
             timeLeft = 5f;
+            canPatrol = true;
+            Debug.Log("Búsqueda terminada");
         }
     }
 
-
     public bool IsTargetInCone(Transform target)
     {
-        // Mide la distancia entre el enemigo y el jugador
         Vector3 dirToTarget = (target.position - transform.position);
+        float dist = dirToTarget.magnitude;
 
-        // Si esta demasiado lejod del gizmos devuelve falso
-        if (dirToTarget.magnitude > rayRange) return false;
+        // Detección por proximidad (Círculo 360º)
+        if (dist <= detectionRadius)
+        {
+            canPatrol = false;
+            wasInside = true;
+            return true;
+        }
 
-        // 2. Angle Check
-        // Convert coneDirection to a base vector (matches your Gizmo logic)
-        // Convierte el angulo del gizmos en un vector3
+        // Detección por Cono
         Vector3 baseDirection = Quaternion.Euler(0, 0, coneDirection) * transform.right;
-
-        // Calcula el ángulo de los gizmos
         float angleToTarget = Vector3.Angle(baseDirection, dirToTarget);
-
-        bool seen = false;
 
         if (angleToTarget < angle / 2.0f)
         {
-            // Crea un Raycast en linea recta que detecta si el objetivo esta a la vista sin obstaculos de por medio
             RaycastHit2D hit = Physics2D.Raycast(transform.position, dirToTarget.normalized, rayRange, obstructionMask | targetMask);
-
-            
             if (hit.collider != null && ((1 << hit.collider.gameObject.layer) & targetMask) != 0)
             {
-                // Pone en true tambien la variable de wasInside para luego buscarlo cuando deje de verlo
+                canPatrol = false;
                 wasInside = true;
-                // Y activa seen para luego guardar la posicion una vez
                 seen = true;
-                // Y resetea si estaba en 0 el tiempo de busqueda
                 timeLeft = 5f;
-                // Si hace un hit es que puede verlo sin obstaculos por lo que devuelve true
                 return true;
             }
         }
@@ -244,7 +237,6 @@ public class Enemy : MonoBehaviour
 
         if (hitS != null)
         {
-            Debug.Log("Visto");
             if (dir == 1f)
             {
                 coneDirection = 180;
@@ -261,11 +253,18 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        // Guarda la ultima poscion vista del target
-        if (wasInside || seen == true) {
-            lastLoc = player.transform.position;
-            seen = false;
+        if (dist > rayRange)
+        {
+            // Guarda la ultima poscion vista del target
+            if (wasInside && seen)
+            {
+                lastLoc = player.transform.position;
+                Debug.Log(lastLoc);
+                seen = false;
+            }
+            return false;
         }
+
         // Si no se cumple nada de lo anterior devuelve false
         return false;
     }
