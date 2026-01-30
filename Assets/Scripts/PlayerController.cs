@@ -10,6 +10,8 @@ public enum PlayerMoveStates
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
+
     [Header("Movement")]
     public float maxSpeed = 8f;
     public float runSpeedIncrease = 2f;
@@ -36,7 +38,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("States")]
     public PlayerMoveStates playerMoveState;
-    [SerializeField] bool canMove, isGrounded, isAttacking, isRunning, isSliding, isCrouching;
+    public bool canMove, isGrounded, isAttacking, isRunning, isSliding, isCrouching;
 
     [Header("Keys")]
     public KeyCode runKey = KeyCode.LeftShift;
@@ -53,7 +55,12 @@ public class PlayerController : MonoBehaviour
     public float ray_groundAngleDistance;
     Vector3 raycastPosition => transform.position + transform.up * -1 * raycastStartHeight;
 
+    [Header("Callbacks")]
+    public Action onStartCrouch, onStopCrouch, onStartSlide;
+    public Action<Enemy> onChargeOnEnemy;
+
     Rigidbody2D rb;
+    ConstantForce2D constForce;
     CapsuleCollider2D capsuleCollider;
     SpriteRenderer sprtRenderer;
     Animator animator;
@@ -61,17 +68,50 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         rb = GetComponent<Rigidbody2D>();
+        constForce = GetComponent<ConstantForce2D>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         sprtRenderer = GetComponent<SpriteRenderer>();
 
         SpawnBulletPosition = transform.Find("spawnBall");
         CenterPos = transform.Find("center");
+
+        onStartCrouch = () =>
+        {
+            AudioManager.instance.PlayLoopedSFX(MusicLibrary.instance.player_crouching_sfx);
+        };
+
+        onStopCrouch = () =>
+        {
+            AudioManager.instance.StopLoopedSFX();
+        };
+
+        onStartSlide = () =>
+        {
+            AudioManager.instance.PlaySFX2D(MusicLibrary.instance.player_slide_sfx);
+        };
+
+        onChargeOnEnemy = (Enemy enemy) =>
+        {
+            //No muere por impacto
+            if(enemy.health > 1)
+            {
+                Vector2 bounceDir = new Vector2(CenterPos.position.x - enemy.transform.position.x, 10).normalized;
+                AddForceToDir(bounceDir, 10);
+                AudioManager.instance.PlaySFX2D(MusicLibrary.instance.player_bump_sfx);
+            }
+            else
+            {
+                CoolFunctions.PlayerAttackSFX();
+            }
+        };
     }
+
     void Start()
     {
-        rb.gravityScale = gravityScale;
+        rb.gravityScale = 0;
         canMove = true;
     }
 
@@ -117,49 +157,19 @@ public class PlayerController : MonoBehaviour
         animator.SetInteger("player_states", (int)playerMoveState);
     }
 
-    public void Hit(int healthReduce, Vector2 bounceDir)
+    void FixedUpdate()
     {
-        playerCanMove = false;
-        InvokeDelayed(0.3f, () => { playerCanMove = true; });
+        CheckGround();
 
-        rb.velocity = Vector2.zero;
-        rb.AddForce(bounceDir.normalized * 10, ForceMode2D.Impulse);
-        StartCoroutine(IFramesCoroutine(hitInvFramesDuration));
-    }
+        Move();
 
-    IEnumerator IFramesCoroutine(float duration)
-    {
-        print($"Start iframes: {duration}");
-        iFrameCounter = duration;
-        Color ogCol;
-        Color playerCol = ogCol = sprtRenderer.color;
-        float deltaTime = 0.1f;
-
-        while (iFrameCounter > 0)
+        //Aplica una fuerza para que el jugador se "pegue" al suelo
+        if (Mathf.Abs(localVel.x) > 2f && isGrounded && (isRunning || isSliding))
         {
-            playerCol.a = 0.9f;
-            sprtRenderer.color = playerCol;
-            yield return new WaitForSeconds(deltaTime);
-
-            playerCol.a = 0.5f;
-            sprtRenderer.color = playerCol;
-            yield return new WaitForSeconds(deltaTime);
-
-            iFrameCounter -= deltaTime * 2;
+            constForce.force = transform.up * -1 * gravityScale;
         }
-        
-        print($"No iframes: {iFrameCounter}");
-        sprtRenderer.color = ogCol;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();
-        if(enemyScript != null && iFrameCounter <= 0)
-        {
-            Vector2 bounceDir = new Vector2(CenterPos.position.x - collision.transform.position.x, CenterPos.position.y - collision.transform.position.y).normalized;
-            Hit(1, bounceDir);
-        }
+        else
+            constForce.force = Vector2.down * gravityScale;
     }
 
     void StateMachine()
@@ -182,6 +192,9 @@ public class PlayerController : MonoBehaviour
                 {
                     if (Input.GetKey(slideKey) && Mathf.Abs(localVel.x) >= slideVelRequired)
                     {
+                        if (!isSliding)
+                            onStartSlide();
+
                         isRunning = false;
                         isSliding = true;
                         playerMoveState = PlayerMoveStates.Slide;
@@ -215,11 +228,19 @@ public class PlayerController : MonoBehaviour
 
             if (!isSliding && !isRunning && isGrounded && Input.GetKey(crouchKey))
             {
+                if(!isCrouching)
+                    onStartCrouch();
+
                 isCrouching = true;
                 playerMoveState = PlayerMoveStates.Crouch;
             }
             else
+            {
+                if(isCrouching)
+                    onStopCrouch();
+
                 isCrouching = false;
+            }
 
         }
 
@@ -229,20 +250,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void Jump()
     {
-        CheckGround();
-
-        Move();
-
-        //Aplica una fuerza para que el jugador se "pegue" al suelo
-        if (Mathf.Abs(localVel.x) > 2f && isGrounded && (isRunning || isSliding))
-        {
-            rb.gravityScale = 0;
-            rb.AddForce(transform.up * -1 * 5);
-        }
-        else
-            rb.gravityScale = gravityScale;
+        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
 
     void Move()
@@ -276,24 +286,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator AttackCoroutine(PlayerMoveStates attackType)
+    public void Hit(int healthReduce, Vector2 bounceDir)
     {
-        isAttacking = true;
-        playerMoveState = attackType;
-        if (attackType == PlayerMoveStates.AttackRanged)
-        {
-            PlayerBullet bullet = Instantiate(Snowball_bullet);
-            bullet.shootDirection = new Vector2(transform.localScale.x > 0 ? 1 : -1, 1);
-            bullet.transform.position = SpawnBulletPosition.position;
-        }
-
-        yield return new WaitForSeconds(attackDuration);
-        isAttacking = false;
-    }
-
-    void Jump()
-    {
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        AddForceToDir(bounceDir);
+        StartCoroutine(IFramesCoroutine(hitInvFramesDuration));
     }
 
     void CheckGround()
@@ -306,23 +302,72 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, slopeAngle);
     }
 
-
-    public bool playerCanMove
+    public void AddForceToDir(Vector2 dir, float mult = 10, float frozenTime = 0.3f)
     {
-        get { return canMove; }
-        set { canMove = value; }
+        canMove = false;
+        CoolFunctions.InvokeDelayed(this, frozenTime, () => { canMove = true; });
+
+        rb.velocity = Vector2.zero;
+        rb.AddForce(dir.normalized * mult, ForceMode2D.Impulse);
     }
 
-    void InvokeDelayed(float delayTime, Action f)
+    IEnumerator AttackCoroutine(PlayerMoveStates attackType)
     {
-        if (f != null)
-            StartCoroutine(InvokeDelayedCoroutine(delayTime, f));
+        isAttacking = true;
+        playerMoveState = attackType;
+        if (attackType == PlayerMoveStates.AttackRanged)
+        {
+            PlayerBullet bullet = Instantiate(Snowball_bullet);
+            bullet.shootDirection = new Vector2(transform.localScale.x > 0 ? 1 : -1, 1);
+            bullet.transform.position = SpawnBulletPosition.position;
+        }
+        else
+        {
+            CoolFunctions.PlayerAttackSFX();
+        }
+
+        yield return new WaitForSeconds(attackDuration);
+        isAttacking = false;
     }
 
-    IEnumerator InvokeDelayedCoroutine(float delayTime, Action f)
+    IEnumerator IFramesCoroutine(float duration)
     {
-        yield return new WaitForSeconds(delayTime);
-        f();
+        print($"Start iframes: {duration}");
+        iFrameCounter = duration;
+        Color ogCol;
+        Color playerCol = ogCol = sprtRenderer.color;
+        float deltaTime = 0.1f;
+
+        while (iFrameCounter > 0)
+        {
+            playerCol.a = 0.9f;
+            sprtRenderer.color = playerCol;
+            yield return new WaitForSeconds(deltaTime);
+
+            playerCol.a = 0.5f;
+            sprtRenderer.color = playerCol;
+            yield return new WaitForSeconds(deltaTime);
+
+            iFrameCounter -= deltaTime * 2;
+        }
+
+        print($"No iframes: {iFrameCounter}");
+        sprtRenderer.color = ogCol;
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (iFrameCounter <= 0)
+        {
+            Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();
+            if (enemyScript != null)
+            {
+                Vector2 colliderPoint = collision.collider.bounds.ClosestPoint(transform.position);
+
+                Vector2 bounceDir = new Vector2(CenterPos.position.x - colliderPoint.x, CenterPos.position.y - colliderPoint.y).normalized;
+                Hit(1, bounceDir);
+            }
+        }
     }
 
 #if UNITY_EDITOR

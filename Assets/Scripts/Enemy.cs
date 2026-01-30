@@ -29,11 +29,15 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             print("ay");
+            AudioManager.instance.PlaySFX2D(MusicLibrary.instance.enemy_kill_sfx);
+            CoolFunctions.EnemyDeathSFX();
+            GameManager.instance.CreateExplosion(transform);
             Destroy(gameObject);
         }
         else
         {
             print("mamon");
+            AudioManager.instance.PlaySFX2D(MusicLibrary.instance.enemy_ow_sfx);
         }
     }
 
@@ -41,6 +45,9 @@ public class Enemy : MonoBehaviour
     {
         if (collision.CompareTag("PlayerAttackBox"))
         {
+            if(PlayerController.instance.isSliding)
+                PlayerController.instance.onChargeOnEnemy(this);
+
             GetDamage(1);
         }
     }

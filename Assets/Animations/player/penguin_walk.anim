@@ -1513,4 +1513,18 @@ AnimationClip:
     flags: 0
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.083333336
+    functionName: PlaySfx2D
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 09aa8854aba602849af8c6eac281caf3, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.41666666
+    functionName: PlaySfx2D
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: fad91ad6e0d6bb54f953715d3f7ccbf9, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
