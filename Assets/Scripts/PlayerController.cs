@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
     public float friction = 40f;
     public float slideVelRequired = 10;
     public Vector2 localVel;
+    public float YLevelDeath = -7.5f;
     float inputX;
+    Vector2 startPos;
 
     [Header("Jump")]
     public float jumpForce = 12f;
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Attack")]
     public PlayerBullet Snowball_bullet;
+    public int dmgMeleeAtk, dmgChargeAtk;
     public float attackDuration, hitInvFramesDuration;
     float iFrameCounter;
 
@@ -60,17 +63,17 @@ public class PlayerController : MonoBehaviour
     public Action<Enemy> onChargeOnEnemy;
 
     Rigidbody2D rb;
-    ConstantForce2D constForce;
     CapsuleCollider2D capsuleCollider;
     SpriteRenderer sprtRenderer;
     Animator animator;
     Transform SpawnBulletPosition, CenterPos;
 
+
+
     private void Awake()
     {
         instance = this;
         rb = GetComponent<Rigidbody2D>();
-        constForce = GetComponent<ConstantForce2D>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         sprtRenderer = GetComponent<SpriteRenderer>();
@@ -96,23 +99,20 @@ public class PlayerController : MonoBehaviour
         onChargeOnEnemy = (Enemy enemy) =>
         {
             //No muere por impacto
-            if(enemy.health > 1)
+            if (enemy.health > dmgChargeAtk)
             {
                 Vector2 bounceDir = new Vector2(CenterPos.position.x - enemy.transform.position.x, 10).normalized;
                 AddForceToDir(bounceDir, 10);
                 AudioManager.instance.PlaySFX2D(MusicLibrary.instance.player_bump_sfx);
-            }
-            else
-            {
-                CoolFunctions.PlayerAttackSFX();
             }
         };
     }
 
     void Start()
     {
-        rb.gravityScale = 0;
         canMove = true;
+        startPos = transform.position;
+        rb.gravityScale = gravityScale;
     }
 
     // Update is called once per frame
@@ -143,6 +143,8 @@ public class PlayerController : MonoBehaviour
         else
             targetSpeedMult = lastTargetSpeedMult;
 
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
+            Jump();
 
         // Reduce la velocidad poco a poco
         currentSpeedMult = Mathf.MoveTowards(
@@ -151,25 +153,38 @@ public class PlayerController : MonoBehaviour
             runTransitionSpeed * Time.deltaTime
         );
 
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
-            Jump();
+        if (transform.position.y < YLevelDeath)
+            transform.position = startPos;
 
         animator.SetInteger("player_states", (int)playerMoveState);
     }
 
     void FixedUpdate()
     {
-        CheckGround();
+        //Rayos disparados hacia el suelo
+        RaycastHit2D groundedCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundedDistance, LayerMask.GetMask("Ground"));
+        isGrounded = groundedCast.collider != null;
+
+        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance * 2, LayerMask.GetMask("Ground"));
+        float slopeAngle = Vector2.SignedAngle(groundCheckCast.normal, Vector2.up) * -1;
+        transform.rotation = Quaternion.Euler(0f, 0f, slopeAngle);
 
         Move();
 
         //Aplica una fuerza para que el jugador se "pegue" al suelo
-        if (Mathf.Abs(localVel.x) > 2f && isGrounded && (isRunning || isSliding))
+        if (Mathf.Abs(localVel.x) > 2f && isGrounded /*&& (isRunning || isSliding)*/)
         {
-            constForce.force = transform.up * -1 * gravityScale;
+            float desiredY = groundCheckCast.point.y + transform.position.y - capsuleCollider.bounds.extents.y;
+            float diff = desiredY - rb.position.y;
+
+            print(diff);
+            if (diff < 0.01f)
+                rb.position += (Vector2)transform.up * diff;
+
+            rb.AddForce(-transform.up * 20f, ForceMode2D.Force);
+            //rb.AddForce(transform.up * -1 * gravityScale * 10);
         }
-        else
-            constForce.force = Vector2.down * gravityScale;
+            
     }
 
     void StateMachine()
@@ -228,7 +243,7 @@ public class PlayerController : MonoBehaviour
 
             if (!isSliding && !isRunning && isGrounded && Input.GetKey(crouchKey))
             {
-                if(!isCrouching)
+                if (!isCrouching)
                     onStartCrouch();
 
                 isCrouching = true;
@@ -236,7 +251,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if(isCrouching)
+                if (isCrouching)
                     onStopCrouch();
 
                 isCrouching = false;
@@ -290,16 +305,6 @@ public class PlayerController : MonoBehaviour
     {
         AddForceToDir(bounceDir);
         StartCoroutine(IFramesCoroutine(hitInvFramesDuration));
-    }
-
-    void CheckGround()
-    {
-        RaycastHit2D groundedCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundedDistance, LayerMask.GetMask("Ground"));
-        isGrounded = groundedCast.collider != null;
-
-        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance * 2, LayerMask.GetMask("Ground"));
-        float slopeAngle = Vector2.SignedAngle(groundCheckCast.normal, Vector2.up) * -1;
-        transform.rotation = Quaternion.Euler(0f, 0f, slopeAngle);
     }
 
     public void AddForceToDir(Vector2 dir, float mult = 10, float frozenTime = 0.3f)
@@ -359,8 +364,7 @@ public class PlayerController : MonoBehaviour
     {
         if (iFrameCounter <= 0)
         {
-            Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();
-            if (enemyScript != null)
+            if (collision.collider.CompareTag("HurtBox") || collision.collider.GetComponent<Enemy>())
             {
                 Vector2 colliderPoint = collision.collider.bounds.ClosestPoint(transform.position);
 
@@ -398,6 +402,11 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = localVel.y > 0 ? Color.white : Color.yellow;
         Gizmos.DrawRay(CenterPos.position, transform.up * input.y);
         Gizmos.DrawWireSphere(CenterPos.position + transform.up * input.y, 0.1f);
+
+        Gizmos.color = Color.green;
+        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance * 2, LayerMask.GetMask("Ground"));
+        Gizmos.DrawWireSphere(groundCheckCast.point, 0.05f);
+        
     }
 #endif
 }

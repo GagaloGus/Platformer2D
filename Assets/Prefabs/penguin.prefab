@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 7132884336357811220}
   - component: {fileID: 8620330783953823802}
   - component: {fileID: 6392748640821200720}
+  - component: {fileID: 3712739429674359046}
   - component: {fileID: 1491546442041673381}
   - component: {fileID: 7455991172113803293}
   - component: {fileID: 2628277370796292680}
@@ -139,8 +140,10 @@ MonoBehaviour:
   slideVelRequired: 10
   localVel: {x: 0, y: 0}
   jumpForce: 12
-  gravityScale: 3
+  gravityScale: 30
   Snowball_bullet: {fileID: -8582091728229918381, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
+  dmgMeleeAtk: 1
+  dmgChargeAtk: 5
   attackDuration: 0.15
   hitInvFramesDuration: 2
   runTransitionSpeed: 5
@@ -175,7 +178,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 5a0861eb18fd24048941e04f10194b02, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
@@ -187,6 +190,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!247 &3712739429674359046
+ConstantForce2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490572058463344203}
+  m_Enabled: 1
+  m_Force: {x: 0, y: 0}
+  m_RelativeForce: {x: 0, y: 0}
+  m_Torque: 0
 --- !u!70 &1491546442041673381
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

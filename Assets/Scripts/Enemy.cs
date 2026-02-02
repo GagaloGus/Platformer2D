@@ -8,23 +8,28 @@ public class Enemy : MonoBehaviour
 
     Vector2 startPos;
     Rigidbody2D rb;
+    SpriteRenderer sprtRenderer;
     // Start is called before the first frame update
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sprtRenderer = GetComponent<SpriteRenderer>();
         startPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (PlayerController.instance.transform.position.x <= transform.position.x && sprtRenderer.flipX)
+            sprtRenderer.flipX = false;
+        else if (PlayerController.instance.transform.position.x > transform.position.x && !sprtRenderer.flipX)
+            sprtRenderer.flipX = true;
     }
 
     void GetDamage(int dmg)
     {
-        health-= dmg;
+        health -= dmg;
 
         if (health <= 0)
         {
@@ -45,18 +50,21 @@ public class Enemy : MonoBehaviour
     {
         if (collision.CompareTag("PlayerAttackBox"))
         {
-            if(PlayerController.instance.isSliding)
+            if (PlayerController.instance.isSliding)
+            {
                 PlayerController.instance.onChargeOnEnemy(this);
-
-            GetDamage(1);
+                GetDamage(PlayerController.instance.dmgChargeAtk);
+            }
+            else
+                GetDamage(PlayerController.instance.dmgMeleeAtk);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.GetComponent<PlayerBullet>())
+        if (collision.collider.TryGetComponent(out PlayerBullet bullet))
         {
-            GetDamage(1);
+            GetDamage(bullet.damage);
             Destroy(collision.gameObject);
         }
     }

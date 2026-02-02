@@ -229,7 +229,7 @@ MonoBehaviour:
   activeAudioSources: []
   audioPool: {fileID: 2608982549939349993}
   volumeMusic: 0.44
-  volumeSFX: 0.679
+  volumeSFX: 0.632
 --- !u!114 &5085540492754293716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,22 +250,29 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 53046da780bb86845bbdf9c9d58138c5, type: 3}
   - {fileID: 8300000, guid: 0990f9b8885075e4c8f5f1da189ba4e3, type: 3}
   - {fileID: 8300000, guid: a3593831e4eaaf045b1960a09dad3f74, type: 3}
-  player_walking_sfxs:
-  - {fileID: 8300000, guid: 09aa8854aba602849af8c6eac281caf3, type: 3}
-  - {fileID: 8300000, guid: fad91ad6e0d6bb54f953715d3f7ccbf9, type: 3}
   player_crouching_sfx: {fileID: 8300000, guid: 74d9657025d4fd0469f744c7a027f0cb, type: 3}
   player_slide_sfx: {fileID: 8300000, guid: 68314c203da4858458e6aeaba1487cac, type: 3}
   player_bump_sfx: {fileID: 8300000, guid: 8ce023403108f8b41b27ebf80ebab6f0, type: 3}
   player_kill_sfx: {fileID: 8300000, guid: 3d860e912721bda40bce0b58a453af59, type: 3}
+  player_die_sfxs:
+  - {fileID: 8300000, guid: fc59044d08269b84abb6c58121a18e2c, type: 3}
+  - {fileID: 8300000, guid: fb9baac7f1fbc9c478ac1be2390ca20b, type: 3}
+  - {fileID: 8300000, guid: 5bb23f4613ba83b40aa298d429d42d38, type: 3}
   enemy_death_sfxs:
   - {fileID: 8300000, guid: 817e57a2152719049964262ca2cea480, type: 3}
   - {fileID: 8300000, guid: 3d88b6a11f7736243a4290b9bf78e58e, type: 3}
   - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
   - {fileID: 8300000, guid: cece134dc9d6b0944914f427032ed46f, type: 3}
+  - {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
+  - {fileID: 8300000, guid: df07ddbe4a134e941b5eee8c7e1bec42, type: 3}
   enemy_ow_sfx: {fileID: 8300000, guid: f22c0194529801748b31d71bc2e4ee2f, type: 3}
   enemy_kill_sfx: {fileID: 8300000, guid: 3d860e912721bda40bce0b58a453af59, type: 3}
+  level_load_sfx: {fileID: 8300000, guid: 3cd272219fcffd44686e15cfc28eda49, type: 3}
   explosion_sfxs: []
   spawn_sfx: {fileID: 8300000, guid: 81b679ce9647a854585d02f6f66fbd7a, type: 3}
+  switch_on_sfx: {fileID: 8300000, guid: ea02ecec18caeae41983e512cd4e8e0b, type: 3}
+  coin_sfx: {fileID: 8300000, guid: c771e9d8d3acffb4faa7850c5b4c5350, type: 3}
+  powerup_sfx: {fileID: 8300000, guid: a9a71a81b3b9f754a91fa64d33dcc1f5, type: 3}
 --- !u!1 &7384495181841621900
 GameObject:
   m_ObjectHideFlags: 0

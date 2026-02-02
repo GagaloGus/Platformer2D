@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,5 +31,11 @@ public class GameManager : MonoBehaviour
         Transform kaput = Instantiate(Prefab_Explosion).transform;
         kaput.position = objTransform.position;
         kaput.localScale = objTransform.localScale;
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+        print($"loaded scene {sceneName}");
     }
 }
