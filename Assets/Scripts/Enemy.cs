@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class Enemy : MonoBehaviour
 {
-    protected GameObject player, objDetector;
+    protected GameObject player, objDetector, seen, lost;
 
     [Header("Enemy Movement")]
     public float speed = 5f;
@@ -44,8 +44,10 @@ public class Enemy : MonoBehaviour
     protected void Start()
     {
         player = FindAnyObjectByType<PlayerMove>().gameObject;
-        objDetector = transform.GetChild(0).gameObject;
         rb = GetComponent<Rigidbody2D>();
+        objDetector = transform.GetChild(0).gameObject;
+        seen = transform.GetChild(1).gameObject;
+        lost = transform.GetChild(2).gameObject;
     }
 
     protected void Update()
@@ -192,10 +194,13 @@ public class Enemy : MonoBehaviour
         // Solo se mueve si no ha llegado a la última posición conocida
         if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f && canJump)
         {
+            
             Move(lastLoc);
         }
         else
         {
+            seen.SetActive(false);
+            lost.SetActive(true);
             Debug.Log("Llegué al último punto visto");
         }
 
@@ -205,6 +210,7 @@ public class Enemy : MonoBehaviour
             wasInside = false;
             timeLeft = 5f;
             canPatrol = true;
+            lost.SetActive(false);
             Debug.Log("Búsqueda terminada");
         }
     }
@@ -222,6 +228,7 @@ public class Enemy : MonoBehaviour
             timeLeft = 5f;
             lastLoc = player.transform.position;
             Debug.Log(lastLoc);
+            seen.SetActive(true);
             return true;
         }
 
@@ -239,6 +246,7 @@ public class Enemy : MonoBehaviour
                 timeLeft = 5f;
                 lastLoc = player.transform.position;
                 Debug.Log(lastLoc);
+                seen.SetActive(true);
                 return true;
             }
         }
@@ -266,7 +274,6 @@ public class Enemy : MonoBehaviour
         {
             return false;
         }
-
         // Si no se cumple nada de lo anterior devuelve false
         return false;
     }
