@@ -16,6 +16,6 @@ public class ScoreUI : MonoBehaviour
 
     void Update()
     {
-        scoreText.text = "Score: " + GameManager.Instance.GetScore() + "\nHighscore: " + GameManager.Instance.GetHighScore();
+        scoreText.text = "Score: " + GameManager.instance.GetScore() + "\nHighscore: " + GameManager.instance.GetHighScore();
     }
 }

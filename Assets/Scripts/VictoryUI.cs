@@ -9,6 +9,6 @@ public class VictoryUI : MonoBehaviour
 
     void Start()
     {
-        finalScoreText.text = "Score: " + GameManager.Instance.GetScore() + "\nHighscore: " + GameManager.Instance.GetHighScore();
+        finalScoreText.text = "Score: " + GameManager.instance.GetScore() + "\nHighscore: " + GameManager.instance.GetHighScore();
     }
 }
