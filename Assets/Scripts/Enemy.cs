@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     public List<Vector2> PatrolPoints;
 
     protected Rigidbody2D rb;
-    protected bool wasInside = false, isWaiting = false, canPatrol = true, seen = false;
+    protected bool wasInside = false, isWaiting = false, canPatrol = true;
     protected Vector2 lastLoc;
     protected int currentPointIndex = 0;
 
@@ -158,7 +158,7 @@ public class Enemy : MonoBehaviour
     {
         Vector2 target = PatrolPoints[currentPointIndex];
 
-        if (Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(target.x) && isWaiting == false)
+        if (Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(target.x) && isWaiting == false && canJump)
         {
             Move(target);
             //Debug.Log("Moviendo... Enemigo X: " + Mathf.RoundToInt(transform.position.x) + " Target X: " + Mathf.RoundToInt(target.x));
@@ -175,7 +175,6 @@ public class Enemy : MonoBehaviour
                 currentPointIndex = 0;
             }
         }
-
     }
 
     protected IEnumerator wait()
@@ -191,7 +190,7 @@ public class Enemy : MonoBehaviour
     {
         canPatrol = false;
         // Solo se mueve si no ha llegado a la última posición conocida
-        if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f)
+        if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f && canJump)
         {
             Move(lastLoc);
         }
@@ -220,8 +219,9 @@ public class Enemy : MonoBehaviour
         {
             canPatrol = false;
             wasInside = true;
-            seen = true;
             timeLeft = 5f;
+            lastLoc = player.transform.position;
+            Debug.Log(lastLoc);
             return true;
         }
 
@@ -236,8 +236,9 @@ public class Enemy : MonoBehaviour
             {
                 canPatrol = false;
                 wasInside = true;
-                seen = true;
                 timeLeft = 5f;
+                lastLoc = player.transform.position;
+                Debug.Log(lastLoc);
                 return true;
             }
         }
@@ -263,13 +264,6 @@ public class Enemy : MonoBehaviour
 
         if (dist > rayRange)
         {
-            // Guarda la ultima poscion vista del target
-            if (wasInside && seen)
-            {
-                lastLoc = player.transform.position;
-                Debug.Log(lastLoc);
-                seen = false;
-            }
             return false;
         }
 

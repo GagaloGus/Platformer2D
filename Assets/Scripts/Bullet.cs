@@ -10,10 +10,10 @@ public class Bullet : MonoBehaviour
     private void Start()
     {
         parent = GetComponentInParent<Ammo>().gameObject.GetComponentInParent<ShooterEnemy>().gameObject;
+        dirX = parent.GetComponent<ShooterEnemy>().dir;
     }
     void Update()
     {
-        dirX = parent.GetComponent<ShooterEnemy>().dir;
         Vector2 move = new Vector2(dirX, 0f) * bulletSpeed * Time.deltaTime;
         transform.Translate(move);
     }
