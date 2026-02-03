@@ -11,6 +11,11 @@ public static class CoolFunctions
         PlayRandomClip(MusicLibrary.instance.player_attack_sfxs);
     }
 
+    public static void PlayerShootSFX()
+    {
+        PlayRandomClip(MusicLibrary.instance.player_shoot_sfxs);
+    }
+
     public static void EnemyDeathSFX()
     {
         PlayRandomClip(MusicLibrary.instance.enemy_death_sfxs);

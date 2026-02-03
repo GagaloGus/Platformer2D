@@ -14,19 +14,17 @@ public class AudioManager : MonoBehaviour
     [Header("Volume")]
     [Range(0, 1)] public float volumeMusic;
     [Range(0, 1)] public float volumeSFX;
-
     void Awake()
     {
         if (instance)
-        {
             Destroy(gameObject);
-        }
         else
         {
             instance = this;
             activeAudioSources = new List<AudioSource>();
             DontDestroyOnLoad(gameObject);
         }
+
         audioPool = transform.Find("GameObjPoolAudios").GetComponent<GameObjPool>();
         ambientSource = transform.Find("AmbientMusic").GetComponent<AudioSource>();
         loopSFXSource = transform.Find("LoopSFXSource").GetComponent<AudioSource>();
@@ -38,6 +36,7 @@ public class AudioManager : MonoBehaviour
     {
         ambientSource.volume = volumeMusic;
     }
+
     public void SetMusicVolume(float volume)
     {
         volumeMusic = Mathf.Clamp01(volume);
@@ -46,11 +45,6 @@ public class AudioManager : MonoBehaviour
     public void SetSFXVolume(float volume)
     {
         volumeSFX = Mathf.Clamp01(volume);
-    }
-
-    public void SetMasterVolume(float volume)
-    {
-        AudioListener.volume = Mathf.Clamp01(volume);
     }
 
     void PlaySFX(AudioClip clip, Vector3 position, bool audio3d, float volume = 1)
@@ -101,6 +95,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayAmbientMusic(AudioClip clip, float volume = 1)
     {
+        print($"PLAY ambient: {clip.name}");
         if (muteMusic)
         {
             StopAmbientMusic();
@@ -113,12 +108,10 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        if (clip == ambientSource.clip)
-            return;
-
         StopCoroutine(nameof(FadeOutInAmbientMusic));
 
         StartCoroutine(FadeOutInAmbientMusic(clip, volume));
+        print($"PLAY F ambient: {clip.name}");
     }
 
     public void StopAmbientMusic()
@@ -157,6 +150,7 @@ public class AudioManager : MonoBehaviour
 
     IEnumerator FadeOutInAmbientMusic(AudioClip clip, float volume = 1)
     {
+        print($"Fade in ambient START: {clip.name}");
         //Observa si se esta reproduciendo alguna cancion
         if (ambientSource.isPlaying)
         {
@@ -189,6 +183,7 @@ public class AudioManager : MonoBehaviour
         }
 
         AudioListener.volume = 1;
+        print($"Fade in ambient FINISH: {clip.name}");
     }
 
     public void StopAllSFX()

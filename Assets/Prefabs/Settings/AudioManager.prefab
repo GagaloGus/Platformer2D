@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToPool: {fileID: 0}
-  size: 50
+  size: 20
   shouldExpand: 1
 --- !u!1 &7312792685024995723
 GameObject:
@@ -243,13 +243,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level1_song: {fileID: 8300000, guid: a870fff6e28f8fa4a8027ba884d5c54c, type: 3}
-  level2_song: {fileID: 0}
-  level3_song: {fileID: 0}
+  level2_song: {fileID: 8300000, guid: 84a4da929b002ef44b011d2e6aa325a6, type: 3}
+  level3_song: {fileID: 8300000, guid: 0075d5c29e0447f4e95182a6b7a8c946, type: 3}
   player_attack_sfxs:
   - {fileID: 8300000, guid: c5f3cf89d9ad277449baa4b37a6e96a2, type: 3}
   - {fileID: 8300000, guid: 53046da780bb86845bbdf9c9d58138c5, type: 3}
   - {fileID: 8300000, guid: 0990f9b8885075e4c8f5f1da189ba4e3, type: 3}
   - {fileID: 8300000, guid: a3593831e4eaaf045b1960a09dad3f74, type: 3}
+  player_shoot_sfxs:
+  - {fileID: 8300000, guid: 2de35fb7eed94c043a797879b4845f61, type: 3}
   player_crouching_sfx: {fileID: 8300000, guid: 74d9657025d4fd0469f744c7a027f0cb, type: 3}
   player_slide_sfx: {fileID: 8300000, guid: 68314c203da4858458e6aeaba1487cac, type: 3}
   player_bump_sfx: {fileID: 8300000, guid: 8ce023403108f8b41b27ebf80ebab6f0, type: 3}
@@ -260,16 +262,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5bb23f4613ba83b40aa298d429d42d38, type: 3}
   enemy_death_sfxs:
   - {fileID: 8300000, guid: 817e57a2152719049964262ca2cea480, type: 3}
-  - {fileID: 8300000, guid: 3d88b6a11f7736243a4290b9bf78e58e, type: 3}
   - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
   - {fileID: 8300000, guid: cece134dc9d6b0944914f427032ed46f, type: 3}
   - {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
   - {fileID: 8300000, guid: df07ddbe4a134e941b5eee8c7e1bec42, type: 3}
+  - {fileID: 8300000, guid: d2d6770e7d293b64bafa41b3d9431eed, type: 3}
   enemy_ow_sfx: {fileID: 8300000, guid: f22c0194529801748b31d71bc2e4ee2f, type: 3}
   enemy_kill_sfx: {fileID: 8300000, guid: 3d860e912721bda40bce0b58a453af59, type: 3}
-  level_load_sfx: {fileID: 8300000, guid: 3cd272219fcffd44686e15cfc28eda49, type: 3}
-  explosion_sfxs: []
+  level_load_sfxs:
+  - {fileID: 8300000, guid: d3e4d74e6d317844b8494bd1f9e1ea64, type: 3}
+  - {fileID: 8300000, guid: 3cd272219fcffd44686e15cfc28eda49, type: 3}
+  - {fileID: 8300000, guid: eabee24fc6451444788a11bdc2d683d3, type: 3}
+  - {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
+  - {fileID: 8300000, guid: a84e642d25d6bd6429668d538fef8fbd, type: 3}
+  explosion_sfxs:
+  - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
+  confetti_sfx: {fileID: 8300000, guid: d3e4d74e6d317844b8494bd1f9e1ea64, type: 3}
   spawn_sfx: {fileID: 8300000, guid: 81b679ce9647a854585d02f6f66fbd7a, type: 3}
+  BIG_spawn_sfx: {fileID: 8300000, guid: 0625aa16956ce234e9aaa5b844f401a9, type: 3}
   switch_on_sfx: {fileID: 8300000, guid: ea02ecec18caeae41983e512cd4e8e0b, type: 3}
   coin_sfx: {fileID: 8300000, guid: c771e9d8d3acffb4faa7850c5b4c5350, type: 3}
   powerup_sfx: {fileID: 8300000, guid: a9a71a81b3b9f754a91fa64d33dcc1f5, type: 3}
