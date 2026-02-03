@@ -8,7 +8,7 @@ public enum GameState { Playing, Paused, Victory, GameOver }
 public class GameManager : MonoBehaviour
 {
 
-    public static GameManager Instance;
+    public static GameManager instance;
 
     public GameObject Prefab_Explosion;
 
@@ -21,9 +21,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
 
         } else
