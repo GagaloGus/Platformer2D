@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour
     private int score;
     private int highScore;
 
+    [Header("Lives")]
+    private int maxLives = 3;
+    private int currentLives;
+
     private void Awake()
     {
         if (instance == null)
@@ -70,6 +74,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoseLife()
+    {
+        if(gameState != GameState.Playing) return;
+
+        currentLives --;
+
+
+        if (currentLives <= 0)
+        {
+            GameOver();
+        }
+    }
+
     public void PauseGame()
     {
         if (gameState != GameState.Playing) return;
@@ -92,6 +109,14 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    void GameOver()
+    {
+        gameState = GameState.GameOver;
+        Time.timeScale = 0f;
+
+        // lo que se debería cargar cuando se acabe
+    }
+
     public int GetScore()
     {
         return score;
@@ -100,6 +125,11 @@ public class GameManager : MonoBehaviour
     public int GetHighScore()
     {
         return highScore;
+    }
+
+    public int GetLives()
+    {
+        return currentLives;
     }
 
     public void Victoria()
