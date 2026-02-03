@@ -6,6 +6,7 @@ public class PlayerBullet : MonoBehaviour
 {
     public Vector2 shootDirection;
     public float speed;
+    public int damage = 1;
 
     Rigidbody2D rb;
 

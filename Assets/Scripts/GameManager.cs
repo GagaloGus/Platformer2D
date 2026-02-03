@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
+    public GameObject Prefab_Explosion;
 
     [Header("Game State")]
     public GameState gameState = GameState.Playing;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
 
         } else
         {
@@ -31,6 +33,7 @@ public class GameManager : MonoBehaviour
         }
        
         highScore = PlayerPrefs.GetInt("HighScore", 0);
+
     }
 
     void Start()
@@ -38,6 +41,21 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         score = 0;
         gameState = GameState.Playing;
+
+        AudioManager.instance.PlayAmbientMusic(MusicLibrary.instance.level1_song);
+    }
+
+    public void CreateExplosion(Transform objTransform)
+    {
+        Transform kaput = Instantiate(Prefab_Explosion).transform;
+        kaput.position = objTransform.position;
+        kaput.localScale = objTransform.localScale;
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+        print($"loaded scene {sceneName}");
     }
 
     public void AddScore(int points)
