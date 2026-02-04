@@ -5,17 +5,22 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float bulletSpeed = 10f, dirX = -1f;
-    public GameObject parent;
+    public GameObject parent, player;
+    private Rigidbody2D rb;
 
-    private void Start()
+    private void Awake()
     {
+        player = FindAnyObjectByType<PlayerMove>().gameObject;
         parent = GetComponentInParent<Ammo>().gameObject.GetComponentInParent<ShooterEnemy>().gameObject;
-        dirX = parent.GetComponent<ShooterEnemy>().dir;
+        rb = GetComponent<Rigidbody2D>();
     }
-    void Update()
+    private void OnEnable()
     {
-        Vector2 move = new Vector2(dirX, 0f) * bulletSpeed * Time.deltaTime;
-        transform.Translate(move);
+        float dist = Vector3.Distance(player.transform.position, parent.transform.position);
+        Vector3 direction = player.transform.position - parent.transform.position + Vector3.up * (dist / 3);
+        direction.Normalize();
+
+        rb.velocity = direction * bulletSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

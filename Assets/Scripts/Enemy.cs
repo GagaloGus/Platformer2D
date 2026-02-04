@@ -163,11 +163,9 @@ public class Enemy : MonoBehaviour
         if (Mathf.RoundToInt(transform.position.x) != Mathf.RoundToInt(target.x) && isWaiting == false && canJump)
         {
             Move(target);
-            //Debug.Log("Moviendo... Enemigo X: " + Mathf.RoundToInt(transform.position.x) + " Target X: " + Mathf.RoundToInt(target.x));
         }
         else
         {
-            //Debug.Log("Llegué al punto " + currentPointIndex);
             StartCoroutine(wait());
 
             currentPointIndex++;
@@ -194,14 +192,12 @@ public class Enemy : MonoBehaviour
         // Solo se mueve si no ha llegado a la última posición conocida
         if (Mathf.Abs(transform.position.x - lastLoc.x) > 0.5f && canJump)
         {
-            
             Move(lastLoc);
         }
         else
         {
             seen.SetActive(false);
             lost.SetActive(true);
-            Debug.Log("Llegué al último punto visto");
         }
 
         timeLeft -= Time.deltaTime;
@@ -211,7 +207,6 @@ public class Enemy : MonoBehaviour
             timeLeft = 5f;
             canPatrol = true;
             lost.SetActive(false);
-            Debug.Log("Búsqueda terminada");
         }
     }
 
@@ -227,8 +222,8 @@ public class Enemy : MonoBehaviour
             wasInside = true;
             timeLeft = 5f;
             lastLoc = player.transform.position;
-            Debug.Log(lastLoc);
             seen.SetActive(true);
+            lost.SetActive(false);
             return true;
         }
 
@@ -245,8 +240,8 @@ public class Enemy : MonoBehaviour
                 wasInside = true;
                 timeLeft = 5f;
                 lastLoc = player.transform.position;
-                Debug.Log(lastLoc);
                 seen.SetActive(true);
+                lost.SetActive(false);
                 return true;
             }
         }

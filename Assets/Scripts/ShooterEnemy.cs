@@ -47,6 +47,21 @@ public class ShooterEnemy : Enemy
     } 
     public IEnumerator Shoot()
     {
+        if (dir == 1f)
+        {
+            coneDirection = 180;
+            GetComponent<SpriteRenderer>().flipX = false;
+            objDetector.transform.position = new Vector2(transform.position.x - 0.9f, transform.position.y + 1);
+            dir = -1f;
+        }
+        else if (dir == -1f)
+        {
+            coneDirection = 0;
+            GetComponent<SpriteRenderer>().flipX = true;
+            objDetector.transform.position = new Vector2(transform.position.x + 0.9f, transform.position.y + 1);
+            dir = 1f;
+        }
+
         GameObject bullet = ammo.GetObject();
         bullet.transform.position = transform.position;
 

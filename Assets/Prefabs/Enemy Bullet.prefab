@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7467059497860542474}
   - component: {fileID: 3225391664104679179}
   - component: {fileID: 6172783844839290860}
-  - component: {fileID: 87375973006199726}
   - component: {fileID: 923039158521501787}
+  - component: {fileID: 3521798766977819920}
   m_Layer: 0
   m_Name: Enemy Bullet
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 16.280006, y: 9.786036, z: 0}
-  m_LocalScale: {x: 0.37, y: 0.37, z: 0.37}
+  m_LocalScale: {x: 0.27, y: 0.27, z: 0.27}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.5656273, g: 0.6981132, b: 0.016464932, a: 1}
+  m_Sprite: {fileID: -1192856051, guid: fc1d67a4622f38e4a97f5152c1977ca9, type: 3}
+  m_Color: {r: 0, g: 1, b: 0.9828744, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -114,7 +114,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &87375973006199726
+--- !u!114 &923039158521501787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8761887213330073437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dae4588924430c4b897ba2d860d9f5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletSpeed: 10
+  dirX: -1
+  parent: {fileID: 0}
+  player: {fileID: 0}
+--- !u!58 &3521798766977819920
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,20 +162,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.03298709}
   serializedVersion: 2
-  m_Radius: 0.5
---- !u!114 &923039158521501787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8761887213330073437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dae4588924430c4b897ba2d860d9f5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletSpeed: 10
-  dirX: -1
+  m_Radius: 0.90104157
