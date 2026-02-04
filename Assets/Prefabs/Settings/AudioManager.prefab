@@ -259,7 +259,8 @@ MonoBehaviour:
   player_die_sfxs:
   - {fileID: 8300000, guid: fc59044d08269b84abb6c58121a18e2c, type: 3}
   - {fileID: 8300000, guid: fb9baac7f1fbc9c478ac1be2390ca20b, type: 3}
-  - {fileID: 8300000, guid: 5bb23f4613ba83b40aa298d429d42d38, type: 3}
+  - {fileID: 8300000, guid: 1feaa51a3f594b242b8286af2c35cab9, type: 3}
+  - {fileID: 8300000, guid: d0f12bdb4fbd2b0488820812077524a5, type: 3}
   enemy_death_sfxs:
   - {fileID: 8300000, guid: 817e57a2152719049964262ca2cea480, type: 3}
   - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
@@ -275,9 +276,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: eabee24fc6451444788a11bdc2d683d3, type: 3}
   - {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
   - {fileID: 8300000, guid: a84e642d25d6bd6429668d538fef8fbd, type: 3}
+  - {fileID: 8300000, guid: a5594f0e8079f1f438add023a1a283e7, type: 3}
   explosion_sfxs:
   - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
   confetti_sfx: {fileID: 8300000, guid: d3e4d74e6d317844b8494bd1f9e1ea64, type: 3}
+  lego_breaking_sfx: {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
   spawn_sfx: {fileID: 8300000, guid: 81b679ce9647a854585d02f6f66fbd7a, type: 3}
   BIG_spawn_sfx: {fileID: 8300000, guid: 0625aa16956ce234e9aaa5b844f401a9, type: 3}
   switch_on_sfx: {fileID: 8300000, guid: ea02ecec18caeae41983e512cd4e8e0b, type: 3}

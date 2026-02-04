@@ -111,7 +111,6 @@ public class AudioManager : MonoBehaviour
         StopCoroutine(nameof(FadeOutInAmbientMusic));
 
         StartCoroutine(FadeOutInAmbientMusic(clip, volume));
-        print($"PLAY F ambient: {clip.name}");
     }
 
     public void StopAmbientMusic()
@@ -150,7 +149,6 @@ public class AudioManager : MonoBehaviour
 
     IEnumerator FadeOutInAmbientMusic(AudioClip clip, float volume = 1)
     {
-        print($"Fade in ambient START: {clip.name}");
         //Observa si se esta reproduciendo alguna cancion
         if (ambientSource.isPlaying)
         {
@@ -183,7 +181,6 @@ public class AudioManager : MonoBehaviour
         }
 
         AudioListener.volume = 1;
-        print($"Fade in ambient FINISH: {clip.name}");
     }
 
     public void StopAllSFX()

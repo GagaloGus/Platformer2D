@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [Header("Score")]
     private int score;
     private int highScore;
+    int coins;
 
     private void Awake()
     {
@@ -41,21 +42,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         score = 0;
         gameState = GameState.Playing;
-
-        AudioManager.instance.PlayAmbientMusic(MusicLibrary.instance.level1_song);
-    }
-
-    public void CreateExplosion(Transform objTransform)
-    {
-        Transform kaput = Instantiate(Prefab_Explosion).transform;
-        kaput.position = objTransform.position;
-        kaput.localScale = objTransform.localScale;
-    }
-
-    public void LoadScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-        print($"loaded scene {sceneName}");
     }
 
     public void AddScore(int points)
@@ -108,4 +94,37 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    public void GetCoins(int amount)
+    {
+        coins += amount;
+    }
+
+    public void CreateExplosion(Transform objTransform)
+    {
+        CreateExplosion(objTransform.position, objTransform.localScale);
+    }
+
+    public void CreateExplosion(Vector3 position, Vector3 localScale)
+    {
+        Transform kaput = Instantiate(Prefab_Explosion).transform;
+        kaput.position = position;
+        kaput.localScale = localScale;
+    }
+
+    public void ChangeScene(string sceneName)
+    {
+        StartCoroutine(ChangeAsyncScene(sceneName));
+    }
+
+    IEnumerator ChangeAsyncScene(string sceneName)
+    {
+        print($"loading scene async {sceneName}");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+    }
 }

@@ -32,13 +32,20 @@ public class UIManager : MonoBehaviour
     public void ChangeScene(string sceneName)
     {
         AudioManager.instance.StopAll();
-        CoolFunctions.PlayRandomClip(MusicLibrary.instance.level_load_sfxs);
+        AudioClip clip = CoolFunctions.PlayRandomClip(MusicLibrary.instance.level_load_sfxs);
         PantallaCarga.gameObject.SetActive(true);
         PantallaCarga.SetInteger("state", 1);
+        float rnd = Mathf.Clamp(Random.Range(0.5f, 1.5f) * clip.length / 2, 0, 8);
+        print(rnd);
 
-        CoolFunctions.InvokeDelayed(this, Random.Range(1.5f, 3f), () =>
+        CoolFunctions.InvokeDelayed(this, rnd, () =>
         {
             GameManager.instance.ChangeScene(sceneName);
         });
+    }
+
+    public void ReloadScene()
+    {
+        ChangeScene(SceneManager.GetActiveScene().name);
     }
 }

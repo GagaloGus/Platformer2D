@@ -792,9 +792,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 380793317}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b58f0f8b2e48ab14eb9fc739c178efb5, type: 3}
+  m_Script: {fileID: 11500000, guid: 67a4f8c1a7c0d4c47ab7d0e07b9c61bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Prefab_Explosion: {fileID: 4718461704227563348, guid: 70226b1a60374054e8346ed8304995e1, type: 3}
   gameState: 0
 --- !u!4 &380793319
 Transform:

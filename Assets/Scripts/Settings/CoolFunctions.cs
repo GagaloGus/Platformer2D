@@ -21,11 +21,12 @@ public static class CoolFunctions
         PlayRandomClip(MusicLibrary.instance.enemy_death_sfxs);
     }
 
-    public static void PlayRandomClip(AudioClip[] clips)
+    public static AudioClip PlayRandomClip(AudioClip[] clips)
     {
         AudioClip clip = clips[Random.Range(0, clips.Length)];
 
         AudioManager.instance.PlaySFX2D(clip);
+        return clip;
     }
 
     public static void InvokeDelayed(MonoBehaviour m, float delayTime, System.Action f)
