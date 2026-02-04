@@ -13,6 +13,9 @@ public class EnemySpawner : MonoBehaviour
     {
         if (Input.GetKeyDown(spawnEnemyKey) && Prefab_enemy != null)
             SpawnNewEnemy();
+
+        if (Input.GetKeyDown(spawnBossEnemyKey) && Prefab_bossEnemy != null)
+            SpawnBossEnemy();
     }
 
     public void SpawnNewEnemy()
@@ -26,7 +29,7 @@ public class EnemySpawner : MonoBehaviour
     {
         Transform enemy = Instantiate(Prefab_bossEnemy).transform;
         enemy.position = spawnEnemyPos;
-        AudioManager.instance.PlaySFX2D(MusicLibrary.instance.spawn_sfx);
+        AudioManager.instance.PlaySFX2D(MusicLibrary.instance.BIG_spawn_sfx);
     }
 
 #if UNITY_EDITOR

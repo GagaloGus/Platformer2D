@@ -13,8 +13,9 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
 
     [Header("Movement")]
-    public float maxSpeed = 8f;
-    public float runSpeedIncrease = 2f;
+    public float maxSpeed = 3f;
+    public float runSpeedIncrease = 2.5f;
+    public float slideSpeedIncrease = 3.5f;
     public float crouchSpeed = 0.3f;
     public float acceleration = 40f;
     public float friction = 40f;
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
     public float raycastStartHeight;
     public float ray_groundedDistance;
     public float ray_groundAngleDistance;
-    Vector3 raycastPosition => transform.position + transform.up * -1 * raycastStartHeight;
+    Vector2 raycastPosition => transform.position + transform.up * -1 * raycastStartHeight;
 
     [Header("Callbacks")]
     public Action onStartCrouch, onStopCrouch, onStartSlide;
@@ -132,8 +133,10 @@ public class PlayerController : MonoBehaviour
             capsuleCollider.direction = CapsuleDirection2D.Vertical;
 
         //Multiplicadores de velocidad
-        if (isRunning || isSliding)
+        if (isRunning)
             targetSpeedMult *= runSpeedIncrease;
+        else if (isSliding)
+            targetSpeedMult *= slideSpeedIncrease;
 
         if (isCrouching)
             targetSpeedMult = crouchSpeed;
@@ -165,26 +168,19 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D groundedCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundedDistance, LayerMask.GetMask("Ground"));
         isGrounded = groundedCast.collider != null;
 
-        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance * 2, LayerMask.GetMask("Ground"));
+        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance, LayerMask.GetMask("Ground"));
         float slopeAngle = Vector2.SignedAngle(groundCheckCast.normal, Vector2.up) * -1;
         transform.rotation = Quaternion.Euler(0f, 0f, slopeAngle);
 
         Move();
 
         //Aplica una fuerza para que el jugador se "pegue" al suelo
-        if (Mathf.Abs(localVel.x) > 2f && isGrounded /*&& (isRunning || isSliding)*/)
-        {
-            float desiredY = groundCheckCast.point.y + transform.position.y - capsuleCollider.bounds.extents.y;
-            float diff = desiredY - rb.position.y;
+        if (Mathf.Abs(localVel.x) > 2f && isGrounded &&(isRunning || isSliding))
+            rb.gravityScale = 0;
+        else
+            rb.gravityScale = gravityScale;
 
-            print(diff);
-            if (diff < 0.01f)
-                rb.position += (Vector2)transform.up * diff;
-
-            rb.AddForce(-transform.up * 20f, ForceMode2D.Force);
-            //rb.AddForce(transform.up * -1 * gravityScale * 10);
-        }
-            
+        rb.AddForce(-groundCheckCast.normal * 20f, ForceMode2D.Force);
     }
 
     void StateMachine()
@@ -325,6 +321,8 @@ public class PlayerController : MonoBehaviour
             PlayerBullet bullet = Instantiate(Snowball_bullet);
             bullet.shootDirection = new Vector2(transform.localScale.x > 0 ? 1 : -1, 1);
             bullet.transform.position = SpawnBulletPosition.position;
+
+            CoolFunctions.PlayerShootSFX();
         }
         else
         {
@@ -380,6 +378,11 @@ public class PlayerController : MonoBehaviour
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
 
+        if(capsuleCollider == null)
+            capsuleCollider = GetComponent<CapsuleCollider2D>();
+
+        
+
         if (CenterPos == null)
             CenterPos = transform.Find("center");
 
@@ -387,11 +390,11 @@ public class PlayerController : MonoBehaviour
 
         //raycasts
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(raycastPosition + transform.right * -0.25f, transform.right * 0.5f);
-        Gizmos.DrawRay(raycastPosition + transform.right * 0.1f, transform.up * -1 * ray_groundedDistance);
+        Gizmos.DrawRay(raycastPosition + (Vector2)transform.right * -0.25f, transform.right * 0.5f);
+        Gizmos.DrawRay(raycastPosition + (Vector2)transform.right * 0.1f, transform.up * -1 * ray_groundedDistance);
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawRay(raycastPosition + transform.right * -0.1f, transform.up * -1 * ray_groundAngleDistance);
+        Gizmos.DrawRay(raycastPosition + (Vector2)transform.right * -0.1f, transform.up * -1 * ray_groundAngleDistance);
 
         //horizontal
         Gizmos.color = localVel.x > 0 ? Color.red : Color.cyan;
@@ -404,9 +407,8 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(CenterPos.position + transform.up * input.y, 0.1f);
 
         Gizmos.color = Color.green;
-        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance * 2, LayerMask.GetMask("Ground"));
+        RaycastHit2D groundCheckCast = Physics2D.Raycast(raycastPosition, transform.up * -1, ray_groundAngleDistance, LayerMask.GetMask("Ground"));
         Gizmos.DrawWireSphere(groundCheckCast.point, 0.05f);
-        
     }
 #endif
 }

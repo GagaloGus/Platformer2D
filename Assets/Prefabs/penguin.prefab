@@ -86,9 +86,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7132884336357811220}
-  - component: {fileID: 8620330783953823802}
   - component: {fileID: 6392748640821200720}
-  - component: {fileID: 3712739429674359046}
+  - component: {fileID: 8620330783953823802}
   - component: {fileID: 1491546442041673381}
   - component: {fileID: 7455991172113803293}
   - component: {fileID: 2628277370796292680}
@@ -120,6 +119,33 @@ Transform:
   - {fileID: 4561924556584599243}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &6392748640821200720
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490572058463344203}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 5a0861eb18fd24048941e04f10194b02, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!114 &8620330783953823802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,15 +158,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c029cfe64007b5546a9fa05f889119e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 6
+  maxSpeed: 3
   runSpeedIncrease: 2.5
+  slideSpeedIncrease: 3.5
   crouchSpeed: 0.3
   acceleration: 40
   friction: 20
-  slideVelRequired: 10
+  slideVelRequired: 7
   localVel: {x: 0, y: 0}
+  YLevelDeath: -7.5
   jumpForce: 12
-  gravityScale: 30
+  gravityScale: 3
   Snowball_bullet: {fileID: -8582091728229918381, guid: f4e7b497178d2cb409625e807b3b4dea, type: 3}
   dmgMeleeAtk: 1
   dmgChargeAtk: 5
@@ -160,47 +188,9 @@ MonoBehaviour:
   crouchKey: 115
   attack_MeleeKey: 323
   attack_RangeKey: 324
-  raycastStartHeight: 1.12
-  ray_groundedDistance: 0.21
-  ray_groundAngleDistance: 0.32
---- !u!50 &6392748640821200720
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6490572058463344203}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 6200000, guid: 5a0861eb18fd24048941e04f10194b02, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!247 &3712739429674359046
-ConstantForce2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6490572058463344203}
-  m_Enabled: 1
-  m_Force: {x: 0, y: 0}
-  m_RelativeForce: {x: 0, y: 0}
-  m_Torque: 0
+  raycastStartHeight: 1.18
+  ray_groundedDistance: 0.2
+  ray_groundAngleDistance: 0.34
 --- !u!70 &1491546442041673381
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -233,7 +223,7 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.8979939}
+  m_Offset: {x: 0, y: -0.9}
   m_Size: {x: 1.7300001, y: 2.5959876}
   m_Direction: 0
 --- !u!212 &7455991172113803293
