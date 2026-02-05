@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6384266131851814307
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1787358970901861874, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 087ef234fcce5d744be89e6d2796344d, type: 2}
+    - target: {fileID: 1787358970901861874, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Animations.Array.data[0]
+      value: 
+      objectReference: {fileID: 7400000, guid: 087ef234fcce5d744be89e6d2796344d, type: 2}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.9056869
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678219489147017903, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882229137936231465, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: coinType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882229137936231465, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: coinAmount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882229137936231465, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: collect_sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 47688e54b66a81f42855a0698f3d5082, type: 3}
+    - target: {fileID: 3954279102496002292, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Name
+      value: Coin Special Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389234322938702469, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 6582046967323461550, guid: 274d64617113287499ed1c4165d1d8f3, type: 3}
+    - target: {fileID: 4389234322938702469, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389234322938702469, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7901604
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389234322938702469, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fbc0c10c3c19a1e4a8b4d81dbb6db9a6, type: 3}

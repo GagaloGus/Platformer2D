@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4761321672178652505}
   - component: {fileID: 633895733093856389}
-  - component: {fileID: 6168282300853127909}
   - component: {fileID: -5393102200465145396}
+  - component: {fileID: 5267157833809087027}
   m_Layer: 0
   m_Name: kaput
   m_TagString: Untagged
@@ -86,27 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &6168282300853127909
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718461704227563348}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 23073c7aadbb1a54c8c74e5910370ecc, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &-5393102200465145396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,3 +98,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1394dbb538a2a1f4fb54a19f55b5bb24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!111 &5267157833809087027
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4718461704227563348}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: c05d3a11f40a3024d8571f938dcbca86, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: c05d3a11f40a3024d8571f938dcbca86, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0

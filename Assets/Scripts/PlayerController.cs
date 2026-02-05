@@ -124,6 +124,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+        //Orientacion del collider segun lo que este haciendo el player
+        if (isSliding || isCrouching)
+            capsuleCollider.direction = CapsuleDirection2D.Horizontal;
+        else
+            capsuleCollider.direction = CapsuleDirection2D.Vertical;
+
         animator.SetInteger("player_states", (int)playerMoveState);
 
         if (hasDied)
@@ -135,12 +143,6 @@ public class PlayerController : MonoBehaviour
 
         //Estados de animador y variables
         StateMachine();
-
-        //Orientacion del collider segun lo que este haciendo el player
-        if (isSliding || isCrouching)
-            capsuleCollider.direction = CapsuleDirection2D.Horizontal;
-        else
-            capsuleCollider.direction = CapsuleDirection2D.Vertical;
 
         //Multiplicadores de velocidad
         if (isRunning)
