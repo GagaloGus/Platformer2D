@@ -109,8 +109,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4, y: 3, z: 0}
-  m_LocalScale: {x: 0.5375, y: 0.5375, z: 0.5375}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.41, y: 0.41, z: 0.41}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7016854800832832584}
   - {fileID: 8802649283043412457}
@@ -190,7 +190,7 @@ MonoBehaviour:
   crouchKey: 115
   attack_MeleeKey: 323
   attack_RangeKey: 324
-  raycastStartHeight: 1.18
+  raycastStartHeight: 0.89
   ray_groundedDistance: 0.2
   ray_groundAngleDistance: 0.34
 --- !u!70 &1491546442041673381

@@ -72,6 +72,13 @@ public class AudioManager : MonoBehaviour
         PlaySFX(clip, Camera.main.transform.position, false, volume);
     }
 
+    public AudioClip PlayRandomSFX2D(AudioClip[] clips, float volume = 1)
+    {
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        PlaySFX2D(clip);
+        return clip;
+    }
+
     public void PlaySFX3D(AudioClip clip, Vector3 position, float volume = 1)
     {
         PlaySFX(clip, position, true, volume);

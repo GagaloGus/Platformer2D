@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject Prefab_Explosion;
 
+    [Header("Settings")]
+    [Range(0, 1)] public float chancePlayLoadSound = 0.5f;
+
     [Header("Game State")]
     public GameState gameState = GameState.Playing;
 

@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
         {
             print("ay");
             AudioManager.instance.PlaySFX2D(MusicLibrary.instance.enemy_kill_sfx);
-            CoolFunctions.EnemyDeathSFX();
+            AudioManager.instance.PlayRandomSFX2D(MusicLibrary.instance.enemy_death_sfxs);
             GameManager.instance.CreateExplosion(transform);
             Destroy(gameObject);
         }

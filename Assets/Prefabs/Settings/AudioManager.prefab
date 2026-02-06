@@ -277,9 +277,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
   - {fileID: 8300000, guid: a84e642d25d6bd6429668d538fef8fbd, type: 3}
   - {fileID: 8300000, guid: a5594f0e8079f1f438add023a1a283e7, type: 3}
+  - {fileID: 8300000, guid: a5eb631baa214dc46946b7917dade2d0, type: 3}
   explosion_sfxs:
   - {fileID: 8300000, guid: 314b4ccd7895c5e42944ad02f25dcfa9, type: 3}
   confetti_sfx: {fileID: 8300000, guid: d3e4d74e6d317844b8494bd1f9e1ea64, type: 3}
+  door_open_sfx: {fileID: 8300000, guid: 1b795dc4dadf83747816edf09c5fe95e, type: 3}
+  door_close_sfx: {fileID: 8300000, guid: 7f3f43e674d40934eb1fd4003d06c77e, type: 3}
   lego_breaking_sfx: {fileID: 8300000, guid: b8a2d67c257ca4942abe53d2f42cd8d1, type: 3}
   spawn_sfx: {fileID: 8300000, guid: 81b679ce9647a854585d02f6f66fbd7a, type: 3}
   BIG_spawn_sfx: {fileID: 8300000, guid: 0625aa16956ce234e9aaa5b844f401a9, type: 3}

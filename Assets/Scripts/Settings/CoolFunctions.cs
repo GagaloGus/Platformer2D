@@ -6,29 +6,6 @@ using UnityEngine;
 
 public static class CoolFunctions
 {
-    public static void PlayerAttackSFX()
-    {
-        PlayRandomClip(MusicLibrary.instance.player_attack_sfxs);
-    }
-
-    public static void PlayerShootSFX()
-    {
-        PlayRandomClip(MusicLibrary.instance.player_shoot_sfxs);
-    }
-
-    public static void EnemyDeathSFX()
-    {
-        PlayRandomClip(MusicLibrary.instance.enemy_death_sfxs);
-    }
-
-    public static AudioClip PlayRandomClip(AudioClip[] clips)
-    {
-        AudioClip clip = clips[Random.Range(0, clips.Length)];
-
-        AudioManager.instance.PlaySFX2D(clip);
-        return clip;
-    }
-
     public static void InvokeDelayed(MonoBehaviour m, float delayTime, System.Action f)
     {
         if (f != null)

@@ -29,6 +29,7 @@ public class MusicLibrary : MonoBehaviour
     [Header("otros sfx")]
     public AudioClip[] explosion_sfxs;
     public AudioClip confetti_sfx;
+    public AudioClip door_open_sfx, door_close_sfx;
     public AudioClip lego_breaking_sfx;
     public AudioClip spawn_sfx;
     public AudioClip BIG_spawn_sfx;

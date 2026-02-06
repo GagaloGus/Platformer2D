@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Gabo 3.unity
     guid: dca138a4bf0ccd847b915c6fd4fd1f81
+  - enabled: 1
+    path: Assets/Scenes/Nivel1.unity
+    guid: d4c1528514226e14096d4eaca24f69de
   m_configObjects: {}

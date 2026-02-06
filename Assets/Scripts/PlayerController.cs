@@ -362,7 +362,7 @@ public class PlayerController : MonoBehaviour
         //Audio
         AudioManager.instance.StopAll();
         AudioManager.instance.PlaySFX2D(MusicLibrary.instance.lego_breaking_sfx);
-        AudioClip clip = CoolFunctions.PlayRandomClip(MusicLibrary.instance.player_die_sfxs);
+        AudioClip clip = AudioManager.instance.PlayRandomSFX2D(MusicLibrary.instance.player_die_sfxs);
 
         CoolFunctions.InvokeDelayed(this, clip.length - 0.15f, () => { UIManager.instance.ReloadScene(); });
     }
@@ -396,11 +396,11 @@ public class PlayerController : MonoBehaviour
             bullet.shootDirection = new Vector2(transform.localScale.x > 0 ? 1 : -1, 1);
             bullet.transform.position = SpawnBulletPosition.position;
 
-            CoolFunctions.PlayerShootSFX();
+            AudioManager.instance.PlayRandomSFX2D(MusicLibrary.instance.player_shoot_sfxs);
         }
         else
         {
-            CoolFunctions.PlayerAttackSFX();
+            AudioManager.instance.PlayRandomSFX2D(MusicLibrary.instance.player_attack_sfxs);
         }
 
         yield return new WaitForSeconds(attackDuration);

@@ -45,4 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab_Explosion: {fileID: 4718461704227563348, guid: 70226b1a60374054e8346ed8304995e1, type: 3}
+  chancePlayLoadSound: 0.493
   gameState: 0
